@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+
+export const runtime = 'edge';
 import { formatNationalityFlag } from "@/lib/utils";
 
 const standingsCache = new Map<string, { data: unknown; timestamp: number }>();

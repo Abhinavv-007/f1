@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+
+export const runtime = 'edge';
 import circuits from "@/data/circuits.json";
 
 // Read from environment
