@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { BadgeCase } from "@/components/ui/BadgeCase";
 import { ShareCard } from "@/components/ui/ShareCard";
-import { Award, Target, Loader2, Share2 } from "lucide-react";
+import { Award, Activity, Loader2, Share2 } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { getUserProfile } from "@/app/actions/profile";
