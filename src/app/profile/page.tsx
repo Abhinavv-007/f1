@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { BadgeCase } from "@/components/ui/BadgeCase";
 import { ShareCard } from "@/components/ui/ShareCard";
-import { Award, Activity, Loader2, Share2 } from "lucide-react";
+import { Award, Activity, Target, Loader2, Share2 } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { getUserProfile } from "@/app/actions/profile";
@@ -172,10 +172,9 @@ export default function ProfilePage() {
         </div>
 
       </div>
-    </div>
-    {showShare && (
-      <ShareCard prediction={showShare} onClose={() => setShowShare(null)} />
-    )}
+      {showShare && (
+        <ShareCard prediction={showShare} onClose={() => setShowShare(null)} />
+      )}
     </ProtectedRoute>
   );
 }
