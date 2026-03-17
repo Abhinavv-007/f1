@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { TiltCard } from "@/components/ui/TiltCard";
-import { Clock, Lock, Target, TrendingUp, AlertTriangle, Loader2 } from "lucide-react";
+import { Clock, Lock, Target, TrendingUp, AlertTriangle, Loader2, Award } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/components/auth/AuthProvider";
 import driversData from "@/data/drivers.json";
@@ -73,7 +73,7 @@ export default function PredictPage() {
 
   const itemVars = {
     hidden: { opacity: 0, scale: 0.95, y: 15 },
-    show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
   return (
@@ -151,7 +151,7 @@ export default function PredictPage() {
                      className="h-16 rounded-lg border-2 border-border-strong bg-surface-deep text-white font-display font-bold uppercase text-base px-4 focus:border-[#B0BEC5] focus:bg-white/5 focus:outline-none appearance-none cursor-pointer transition-all shadow-inner group-hover:border-[#B0BEC5]/50"
                    >
                      <option value="">Select P2</option>
-                     {driversData.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                     {driversData.map(d => <option key={d.code} value={d.code}>{d.firstName} {d.lastName}</option>)}
                    </select>
                  </div>
 
@@ -169,7 +169,7 @@ export default function PredictPage() {
                      className="h-20 rounded-xl border-4 border-trgt-crimson/50 bg-trgt-crimson/10 text-white font-display uppercase text-xl font-black tracking-tight px-6 focus:border-trgt-crimson focus:bg-trgt-crimson/20 focus:outline-none appearance-none shadow-[0_0_40px_rgba(238,63,44,0.2)] cursor-pointer hover:border-trgt-crimson transition-all"
                    >
                      <option value="">Select Winner</option>
-                     {driversData.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                     {driversData.map(d => <option key={d.code} value={d.code}>{d.firstName} {d.lastName}</option>)}
                    </select>
                  </div>
 
@@ -186,7 +186,7 @@ export default function PredictPage() {
                      className="h-14 rounded-lg border-2 border-border-strong bg-surface-deep text-white font-display font-bold uppercase text-base px-4 focus:border-[#CD7F32] focus:bg-white/5 focus:outline-none appearance-none cursor-pointer transition-all shadow-inner group-hover:border-[#CD7F32]/50"
                    >
                      <option value="">Select P3</option>
-                     {driversData.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                     {driversData.map(d => <option key={d.code} value={d.code}>{d.firstName} {d.lastName}</option>)}
                    </select>
                  </div>
               </Card>
@@ -218,7 +218,7 @@ export default function PredictPage() {
                      className="w-full h-14 rounded-lg bg-surface-deep border-2 border-border-subtle text-white font-bold uppercase px-4 focus:border-f1-purple focus:bg-f1-purple/10 focus:outline-none appearance-none cursor-pointer font-mono group-hover:border-f1-purple/30 transition-colors shadow-inner"
                    >
                      <option value="">Select Driver</option>
-                     {driversData.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                     {driversData.map(d => <option key={d.code} value={d.code}>{d.firstName} {d.lastName}</option>)}
                    </select>
                 </Card>
               </TiltCard>
@@ -240,7 +240,7 @@ export default function PredictPage() {
                      className="w-full h-14 rounded-lg bg-surface-deep border-2 border-border-subtle text-white font-bold uppercase px-4 focus:border-trgt-crimson focus:bg-trgt-crimson/10 focus:outline-none appearance-none cursor-pointer font-mono group-hover:border-trgt-crimson/30 transition-colors shadow-inner"
                    >
                      <option value="none">None (No Retirements)</option>
-                     {driversData.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                     {driversData.map(d => <option key={d.code} value={d.code}>{d.firstName} {d.lastName}</option>)}
                    </select>
                 </Card>
               </TiltCard>

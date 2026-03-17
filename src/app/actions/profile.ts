@@ -17,7 +17,8 @@ export async function getUserProfile(userId: string) {
     let totalPoints = 0;
     let accuratePredictions = 0;
     
-    predictions.forEach(p => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    predictions.forEach((p: any) => {
       totalPoints += p.pointsEarned || 0;
       if (p.accuracyScore && p.accuracyScore > 80) accuratePredictions++; // Just a mock logic
     });

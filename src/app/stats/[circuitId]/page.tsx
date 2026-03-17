@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { AIInsightCard } from "@/components/ui/AIInsightCard";
+import { WeatherWidget } from "@/components/ui/WeatherWidget";
 import Link from "next/link";
 import { ChevronRight, Map, Gauge, Flag, Activity, Clock, FileWarning } from "lucide-react";
 
@@ -120,8 +121,11 @@ export default function CircuitPage({ params }: { params: { circuitId: string } 
               </div>
            </Card>
 
-           {/* Section 2: AI Race Intel */}
-           <AIInsightCard circuitId={params.circuitId} className="mb-0" />
+           {/* Section 2: AI Race Intel & Live Weather */}
+           <div className="flex flex-col gap-6">
+              <WeatherWidget circuitId={params.circuitId} />
+              <AIInsightCard circuitId={params.circuitId} className="mb-0" />
+           </div>
 
            {/* Section 3: Circuit Characteristics System */}
            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">

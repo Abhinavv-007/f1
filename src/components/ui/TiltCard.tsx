@@ -11,9 +11,10 @@ interface TiltCardProps {
   intensity?: number;
   glass?: boolean;
   carbon?: boolean;
+  style?: React.CSSProperties;
 }
 
-export function TiltCard({ children, className, intensity = 15, glass, carbon }: TiltCardProps) {
+export function TiltCard({ children, className, intensity = 15, glass, carbon, style }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   
   // Motion values for the 3D rotation
@@ -76,6 +77,7 @@ export function TiltCard({ children, className, intensity = 15, glass, carbon }:
       style={{
         transformStyle: "preserve-3d",
         transform,
+        ...style
       }}
       className="relative [perspective:1000px] w-full"
     >

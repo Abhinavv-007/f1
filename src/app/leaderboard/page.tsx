@@ -16,7 +16,7 @@ export default function LeaderboardPage() {
 
   const item = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
   const floatAnimation = {
@@ -25,7 +25,7 @@ export default function LeaderboardPage() {
       duration: 4,
       repeat: Infinity,
       repeatType: "reverse" as const,
-      ease: "easeInOut"
+      ease: "easeInOut" as const
     }
   };
 
@@ -34,7 +34,7 @@ export default function LeaderboardPage() {
     show: (height: number) => ({
       height,
       opacity: 1,
-      transition: { duration: 1, type: "spring", bounce: 0.3 }
+      transition: { duration: 1, type: "spring" as const, bounce: 0.3 }
     })
   };
 

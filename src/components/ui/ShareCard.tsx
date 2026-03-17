@@ -20,7 +20,8 @@ interface ShareCardProps {
 }
 
 function getDriverName(id: string) {
-  return driversData.find((d) => d.id === id)?.name || id;
+  const driver = driversData.find((d) => d.code === id);
+  return driver ? `${driver.firstName} ${driver.lastName}` : id;
 }
 
 export function ShareCard({ prediction, onClose }: ShareCardProps) {

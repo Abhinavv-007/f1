@@ -40,7 +40,7 @@ export default function ProfilePage() {
 
   const item = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
   if (loading || !user) {
@@ -156,19 +156,19 @@ export default function ProfilePage() {
                         <div className="grid grid-cols-5 gap-3 text-xs uppercase text-text-muted mt-2 font-bold tracking-widest pl-[80px]">
                            <div className="bg-surface-deep/50 px-3 py-1.5 rounded border border-border-subtle flex flex-col gap-1">
                              <span className="text-[8px] text-text-secondary">P1</span>
-                             <span className="text-white truncate">{driversData.find(d => d.id === pred.winner)?.name || "Pending"}</span>
+                             <span className="text-white truncate">{driversData.find(d => d.code === pred.winner) ? `${driversData.find(d => d.code === pred.winner)?.firstName} ${driversData.find(d => d.code === pred.winner)?.lastName}` : "Pending"}</span>
                            </div>
                            <div className="bg-surface-deep/50 px-3 py-1.5 rounded border border-border-subtle flex flex-col gap-1">
                              <span className="text-[8px] text-text-secondary">P2</span>
-                             <span className="text-white truncate">{driversData.find(d => d.id === pred.p2)?.name || "Pending"}</span>
+                             <span className="text-white truncate">{driversData.find(d => d.code === pred.p2) ? `${driversData.find(d => d.code === pred.p2)?.firstName} ${driversData.find(d => d.code === pred.p2)?.lastName}` : "Pending"}</span>
                            </div>
                            <div className="bg-surface-deep/50 px-3 py-1.5 rounded border border-border-subtle flex flex-col gap-1">
                              <span className="text-[8px] text-text-secondary">P3</span>
-                             <span className="text-white truncate">{driversData.find(d => d.id === pred.p3)?.name || "Pending"}</span>
+                             <span className="text-white truncate">{driversData.find(d => d.code === pred.p3) ? `${driversData.find(d => d.code === pred.p3)?.firstName} ${driversData.find(d => d.code === pred.p3)?.lastName}` : "Pending"}</span>
                            </div>
                            <div className="bg-surface-deep/50 px-3 py-1.5 rounded border border-border-subtle flex flex-col gap-1">
                              <span className="text-[8px] text-text-secondary text-f1-purple">FL</span>
-                             <span className="text-white truncate">{driversData.find(d => d.id === pred.fastestLap)?.name || "-"}</span>
+                             <span className="text-white truncate">{driversData.find(d => d.code === pred.fastestLap) ? `${driversData.find(d => d.code === pred.fastestLap)?.firstName} ${driversData.find(d => d.code === pred.fastestLap)?.lastName}` : "-"}</span>
                            </div>
                            <div className="bg-surface-deep/50 px-3 py-1.5 rounded border border-border-subtle flex flex-col gap-1">
                              <span className="text-[8px] text-text-secondary text-[#FFD700]">SC</span>
