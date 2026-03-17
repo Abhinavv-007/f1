@@ -3,11 +3,13 @@
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { Award, Target, Trophy, ChevronRight, Activity, Lock } from "lucide-react";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default function ProfilePage() {
   return (
-    <div className="flex flex-col w-full min-h-screen pt-4 pb-24 px-6 lg:px-12 max-w-[1400px] mx-auto">
-      {/* Top Banner / User Stats */}
+    <ProtectedRoute>
+      <div className="flex flex-col w-full min-h-screen pt-4 pb-24 px-6 lg:px-12 max-w-[1400px] mx-auto">
+        {/* Top Banner / User Stats */}
       <section className="w-full flex flex-col md:flex-row gap-6 mb-12">
         {/* User Card */}
         <Card glass carbon className="flex-1 p-8 flex items-center gap-6 bg-black/60 border-border-strong relative overflow-hidden group">
@@ -180,5 +182,6 @@ export default function ProfilePage() {
 
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

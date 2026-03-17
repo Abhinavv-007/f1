@@ -5,13 +5,15 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Clock, Lock, Target, TrendingUp, AlertTriangle } from "lucide-react";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default function PredictPage() {
   const [isLocked, setIsLocked] = useState(false);
 
   return (
-    <div className="flex flex-col w-full min-h-screen pt-4 pb-24 px-6 lg:px-12 max-w-[1400px] mx-auto">
-      {/* Top Header / Countdown */}
+    <ProtectedRoute>
+      <div className="flex flex-col w-full min-h-screen pt-4 pb-24 px-6 lg:px-12 max-w-[1400px] mx-auto">
+        {/* Top Header / Countdown */}
       <section className="w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
         <div>
           <h1 className="font-display font-black text-4xl md:text-5xl text-white uppercase tracking-tighter leading-none mb-2">
@@ -188,5 +190,6 @@ export default function PredictPage() {
 
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
