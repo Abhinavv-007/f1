@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Rubik, Rubik_Mono_One } from "next/font/google";
 import { AppShell } from "@/components/layout/AppShell";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import "./globals.css";
 
 const rubik = Rubik({
@@ -44,9 +45,11 @@ export default function RootLayout({
         </div>
         
         <div className="relative z-10 flex min-h-screen flex-col">
-          <AppShell>
-            {children}
-          </AppShell>
+          <AuthProvider>
+            <AppShell>
+              {children}
+            </AppShell>
+          </AuthProvider>
         </div>
       </body>
     </html>

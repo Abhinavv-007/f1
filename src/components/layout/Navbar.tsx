@@ -5,6 +5,9 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 const navLinks = [
   { name: "Live", href: "/live" },
@@ -17,6 +20,7 @@ const navLinks = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const { user, loading } = useAuth();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex h-20 items-center justify-between px-6 lg:px-12 backdrop-blur-xl bg-black/40 border-b border-border-subtle transition-all">
@@ -63,12 +67,24 @@ export function Navbar() {
 
       {/* Right: Auth / Live CTA */}
       <div className="flex items-center gap-4">
-        {/* Placeholder for Auth/User Pill */}
-        <Link href="/login">
-          <Button variant="ghost" size="sm" className="hidden md:flex">
-            Sign In
-          </Button>
-        </Link>
+        {loading ? (
+          <div className="w-12 h-6 animate-pulse bg-surface-hover rounded hidden md:block" />
+        ) : user ? (
+          <div className="flex items-center gap-3">
+            <Link href="/profile" className="w-8 h-8 rounded-full overflow-hidden border border-border-strong hover:border-trgt-crimson transition-colors">
+              <img src={user.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user.displayName || "F1"}`} alt="User" className="w-full h-full object-cover" />
+            </Link>
+            <button onClick={() => signOut(auth)} className="text-[10px] text-text-muted hover:text-white uppercase tracking-widest font-bold hidden md:block">
+              Out
+            </button>
+          </div>
+        ) : (
+          <Link href="/login">
+            <Button variant="ghost" size="sm" className="hidden md:flex">
+              Sign In
+            </Button>
+          </Link>
+        )}
         <Link href="/predict">
           <Button variant="primary" size="sm">
             Lock Prediction

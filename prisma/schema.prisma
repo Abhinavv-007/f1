@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id                 String                @id @default(cuid())
+  email              String                @unique
+  name               String?
+  username           String?               @unique
+  image              String?
+  country            String?
+  bio                String?
+  totalPoints        Int                   @default(0)
+  seasonPoints       Int                   @default(0)
+  globalRank         Int?
+  predictionAccuracy Float                 @default(0.0)
+  isPro              Boolean               @default(false)
+  createdAt          DateTime              @default(now())
+  
+  predictions        Prediction[]
+  badges             Badge[]
+  leaderboardHistory LeaderboardSnapshot[]
+}
+
+model Prediction {
+  id              String   @id @default(cuid())
+  userId          String
+  season          Int
+  raceRound       Int
+  winner          String?
+  p2              String?
+  p3              String?
+  fastestLap      String?
+  firstRetirement String?
+  safetyCar       Boolean?
+  totalLaps       Int?
+  winningMargin   String?
+  locked          Boolean  @default(false)
+  pointsEarned    Int?
+  accuracyScore   Float?
+  submittedAt     DateTime @default(now())
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, season, raceRound])
+}
+
+model Race {
+  id             String   @id @default(cuid())
+  season         Int
+  round          Int
+  name           String
+  circuitId      String
+  country        String
+  raceDate       DateTime
+  status         String   // scheduled, live, completed
+  winnerCode     String?
+  fastestLapCode String?
+  
+  @@unique([season, round])
+}
+
+model Badge {
+  id         String   @id @default(cuid())
+  userId     String
+  badgeType  String
+  earnedAt   DateTime @default(now())
+  
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeType])
+}
+
+model LeaderboardSnapshot {
+  id         String   @id @default(cuid())
+  season     Int
+  userId     String
+  points     Int
+  rank       Int
+  accuracy   Float
+  createdAt  DateTime @default(now())
+  
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([season, userId, rank])
+}
