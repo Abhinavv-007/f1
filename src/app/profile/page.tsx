@@ -1,18 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
-import { Award, Target, Trophy, ChevronRight, Activity, Lock, Loader2 } from "lucide-react";
+import { BadgeCase } from "@/components/ui/BadgeCase";
+import { ShareCard } from "@/components/ui/ShareCard";
+import { Award, Target, Loader2, Share2 } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { getUserProfile } from "@/app/actions/profile";
+import { computeBadges } from "@/lib/badges";
 import driversData from "@/data/drivers.json";
 
 export default function ProfilePage() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<any>(null);
+  const [showShare, setShowShare] = useState<any>(null);
 
   useEffect(() => {
     if (user?.uid) {
@@ -149,43 +152,30 @@ export default function ProfilePage() {
                <Award className="w-5 h-5 text-f1-yellow" />
                Trophy Case
              </h2>
-             <Card glass className="p-6 bg-black/40 grid grid-cols-3 gap-4 border-border-strong">
-                {/* Mock Badges */}
-                <div className="aspect-square rounded border border-[#FFD700] bg-[#FFD700]/10 flex flex-col items-center justify-center gap-2 group cursor-crosshair relative overflow-hidden">
-                   <div className="absolute inset-0 bg-gradient-to-t from-[#FFD700]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                   <Trophy className="w-6 h-6 text-[#FFD700]" />
-                   <span className="text-[8px] uppercase tracking-wider text-white font-bold">Perfect Pod</span>
-                </div>
-                
-                <div className="aspect-square rounded border border-f1-purple bg-f1-purple/10 flex flex-col items-center justify-center gap-2 group cursor-crosshair relative overflow-hidden">
-                   <div className="absolute inset-0 bg-gradient-to-t from-f1-purple/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                   <Activity className="w-6 h-6 text-f1-purple" />
-                   <span className="text-[8px] uppercase tracking-wider text-white font-bold">Pace Master</span>
-                </div>
-
-                <div className="aspect-square rounded border border-trgt-crimson bg-trgt-crimson/10 flex flex-col items-center justify-center gap-2 group cursor-crosshair relative overflow-hidden">
-                   <div className="absolute inset-0 bg-gradient-to-t from-trgt-crimson/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                   <Award className="w-6 h-6 text-trgt-crimson" />
-                   <span className="text-[8px] uppercase tracking-wider text-white font-bold">Veteran</span>
-                </div>
-
-                {/* Empty slots */}
-                <div className="aspect-square rounded border border-border-subtle bg-surface-deep flex items-center justify-center opacity-30">
-                   <Lock className="w-4 h-4 text-text-muted" />
-                </div>
-                <div className="aspect-square rounded border border-border-subtle bg-surface-deep flex items-center justify-center opacity-30">
-                   <Lock className="w-4 h-4 text-text-muted" />
-                </div>
-                <div className="aspect-square rounded border border-border-subtle bg-surface-deep flex items-center justify-center opacity-30">
-                   <Lock className="w-4 h-4 text-text-muted" />
-                </div>
+             <Card glass className="p-6 bg-black/40 border-border-strong">
+                <BadgeCase earnedBadgeIds={computeBadges(profileData?.predictions || [])} />
              </Card>
           </section>
 
+          {/* Share Latest Prediction */}
+          {(profileData?.predictions?.length ?? 0) > 0 && (
+            <button
+              onClick={() => setShowShare(profileData.predictions[0])}
+              className="w-full h-12 rounded border border-border-strong text-white font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 hover:border-trgt-crimson transition-colors mt-2"
+            >
+              <Share2 className="w-4 h-4" />
+              Share Latest Prediction
+            </button>
+          )}
+
+        </div>
         </div>
 
       </div>
     </div>
+    {showShare && (
+      <ShareCard prediction={showShare} onClose={() => setShowShare(null)} />
+    )}
     </ProtectedRoute>
   );
 }

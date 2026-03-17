@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
+import { AIInsightCard } from "@/components/ui/AIInsightCard";
 import Link from "next/link";
 import { ChevronRight, Map, Gauge, Flag, Activity, Clock, FileWarning } from "lucide-react";
 
@@ -119,7 +120,10 @@ export default function CircuitPage({ params }: { params: { circuitId: string } 
               </div>
            </Card>
 
-           {/* Section 2: Circuit Characteristics System */}
+           {/* Section 2: AI Race Intel */}
+           <AIInsightCard circuitId={params.circuitId} className="mb-0" />
+
+           {/* Section 3: Circuit Characteristics System */}
            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
               
               {/* Downforce */}
