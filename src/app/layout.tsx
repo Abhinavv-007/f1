@@ -18,7 +18,29 @@ const rubikMono = Rubik_Mono_One({
 
 export const metadata: Metadata = {
   title: "TRGT | Target Every Lap",
-  description: "An elite Formula 1 fan platform.",
+  description: "An elite Formula 1 fan platform. Live standings, predictions, circuit stats, and race intelligence — all in one place.",
+  metadataBase: new URL("https://trgt.in"),
+  openGraph: {
+    type: "website",
+    url: "https://trgt.in",
+    title: "TRGT | Target Every Lap",
+    description: "An elite Formula 1 fan platform. Live standings, predictions, circuit stats, and race intelligence — all in one place.",
+    siteName: "TRGT",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "TRGT - Target Every Lap",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TRGT | Target Every Lap",
+    description: "An elite Formula 1 fan platform. Live standings, predictions, circuit stats, and race intelligence — all in one place.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
