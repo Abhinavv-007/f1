@@ -1,0 +1,22 @@
+[
+  { "id": "max_verstappen", "name": "M. Verstappen", "team": "Red Bull Racing", "color": "#3671C6" },
+  { "id": "sergio_perez", "name": "S. Perez", "team": "Red Bull Racing", "color": "#3671C6" },
+  { "id": "lewis_hamilton", "name": "L. Hamilton", "team": "Ferrari", "color": "#E80020" },
+  { "id": "charles_leclerc", "name": "C. Leclerc", "team": "Ferrari", "color": "#E80020" },
+  { "id": "lando_norris", "name": "L. Norris", "team": "McLaren", "color": "#FF8000" },
+  { "id": "oscar_piastri", "name": "O. Piastri", "team": "McLaren", "color": "#FF8000" },
+  { "id": "george_russell", "name": "G. Russell", "team": "Mercedes", "color": "#27F4D2" },
+  { "id": "k_antonelli", "name": "K. Antonelli", "team": "Mercedes", "color": "#27F4D2" },
+  { "id": "fernando_alonso", "name": "F. Alonso", "team": "Aston Martin", "color": "#229971" },
+  { "id": "lance_stroll", "name": "L. Stroll", "team": "Aston Martin", "color": "#229971" },
+  { "id": "pierre_gasly", "name": "P. Gasly", "team": "Alpine", "color": "#FF87BC" },
+  { "id": "esteban_ocon", "name": "E. Ocon", "team": "Haas", "color": "#B6BABD" },
+  { "id": "alex_albon", "name": "A. Albon", "team": "Williams", "color": "#64C4FF" },
+  { "id": "carlos_sainz", "name": "C. Sainz", "team": "Williams", "color": "#64C4FF" },
+  { "id": "yuki_tsunoda", "name": "Y. Tsunoda", "team": "RB", "color": "#6692FF" },
+  { "id": "isack_hadjar", "name": "I. Hadjar", "team": "RB", "color": "#6692FF" },
+  { "id": "valtteri_bottas", "name": "V. Bottas", "team": "Kick Sauber", "color": "#52E252" },
+  { "id": "zhou_guanyu", "name": "Z. Guanyu", "team": "Kick Sauber", "color": "#52E252" },
+  { "id": "kevin_magnussen", "name": "K. Magnussen", "team": "Haas", "color": "#B6BABD" },
+  { "id": "nico_hulkenberg", "name": "N. Hulkenberg", "team": "Kick Sauber", "color": "#52E252" }
+]
