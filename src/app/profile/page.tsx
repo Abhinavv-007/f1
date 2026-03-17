@@ -1,11 +1,40 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
-import { Award, Target, Trophy, ChevronRight, Activity, Lock } from "lucide-react";
+import { Award, Target, Trophy, ChevronRight, Activity, Lock, Loader2 } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { getUserProfile } from "@/app/actions/profile";
+import driversData from "@/data/drivers.json";
 
 export default function ProfilePage() {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [profileData, setProfileData] = useState<any>(null);
+
+  useEffect(() => {
+    if (user?.uid) {
+      getUserProfile(user.uid).then((res) => {
+        if (res.success) {
+          setProfileData(res);
+        }
+        setLoading(false);
+      });
+    }
+  }, [user]);
+
+  if (loading || !user) {
+    return (
+      <ProtectedRoute>
+        <div className="flex items-center justify-center w-full min-h-screen">
+          <Loader2 className="w-8 h-8 animate-spin text-trgt-crimson" />
+        </div>
+      </ProtectedRoute>
+    );
+  }
+
   return (
     <ProtectedRoute>
       <div className="flex flex-col w-full min-h-screen pt-4 pb-24 px-6 lg:px-12 max-w-[1400px] mx-auto">
@@ -19,20 +48,20 @@ export default function ProfilePage() {
           </div>
           <div className="flex flex-col relative z-10">
              <div className="flex items-center gap-3 mb-1">
-               <h1 className="font-display font-black text-4xl text-white uppercase tracking-tighter">Alex Fan</h1>
+               <h1 className="font-display font-black text-4xl text-white uppercase tracking-tighter">{user.displayName || "Driver"}</h1>
                <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-widest bg-trgt-crimson/20 text-trgt-crimson border border-trgt-crimson/30">PRO</span>
              </div>
-             <span className="font-mono text-text-secondary text-sm">@alex_f1_fan</span>
+             <span className="font-mono text-text-secondary text-sm">{user.email}</span>
              
              <div className="flex gap-4 mt-4">
                <div className="flex flex-col">
                   <span className="text-[10px] uppercase tracking-widest text-text-muted mb-1">Global Rank</span>
-                  <span className="font-mono text-f1-yellow font-bold text-xl">#4,281</span>
+                  <span className="font-mono text-f1-yellow font-bold text-xl">{profileData?.stats?.globalRank || "-"}</span>
                </div>
                <div className="w-px bg-border-subtle" />
                <div className="flex flex-col">
                   <span className="text-[10px] uppercase tracking-widest text-text-muted mb-1">Season PTS</span>
-                  <span className="font-mono text-white font-bold text-xl">342</span>
+                  <span className="font-mono text-white font-bold text-xl">{profileData?.stats?.totalPoints || 0}</span>
                </div>
              </div>
           </div>
@@ -64,56 +93,31 @@ export default function ProfilePage() {
                   <div className="w-[80px] text-right">Points</div>
                </div>
 
-               {/* Mock Row 1 */}
-               <div className="flex items-center justify-between py-4 px-6 border-b border-border-subtle/30 bg-surface-hover/20 hover:bg-surface-hover/50 transition-colors cursor-pointer group">
-                  <div className="w-[80px] font-mono text-white text-sm">R03</div>
-                  <div className="flex-1 font-display font-black text-white uppercase tracking-tight text-lg">Australian GP</div>
-                  <div className="w-[100px] text-right font-mono text-f1-green text-sm flex items-center justify-end gap-2">
-                     <div className="flex gap-1">
-                        <span className="w-2 h-2 rounded-full bg-f1-green" />
-                        <span className="w-2 h-2 rounded-full bg-f1-green" />
-                        <span className="w-2 h-2 rounded-full bg-f1-green" />
-                        <span className="w-2 h-2 rounded-full bg-trgt-crimson" />
-                     </div>
-                  </div>
-                  <div className="w-[80px] text-right text-white font-mono font-bold group-hover:text-trgt-crimson transition-colors flex items-center justify-end gap-2">
-                     +28 <ChevronRight className="w-4 h-4 text-text-muted" />
-                  </div>
-               </div>
-
-               {/* Mock Row 2 */}
-               <div className="flex items-center justify-between py-4 px-6 border-b border-border-subtle/30 bg-surface-hover/20 hover:bg-surface-hover/50 transition-colors cursor-pointer group">
-                  <div className="w-[80px] font-mono text-white text-sm">R02</div>
-                  <div className="flex-1 font-display font-black text-white uppercase tracking-tight text-lg">Saudi Arabian GP</div>
-                  <div className="w-[100px] text-right font-mono text-text-secondary text-sm flex items-center justify-end gap-2">
-                     <div className="flex gap-1">
-                        <span className="w-2 h-2 rounded-full bg-f1-green" />
-                        <span className="w-2 h-2 rounded-full bg-trgt-crimson" />
-                        <span className="w-2 h-2 rounded-full bg-trgt-crimson" />
-                        <span className="w-2 h-2 rounded-full bg-text-muted" />
-                     </div>
-                  </div>
-                  <div className="w-[80px] text-right text-white font-mono font-bold group-hover:text-trgt-crimson transition-colors flex items-center justify-end gap-2">
-                     +14 <ChevronRight className="w-4 h-4 text-text-muted" />
-                  </div>
-               </div>
+               {/* Prediction Rows */}
+               {profileData?.predictions?.map((pred: any) => (
+                 <div key={pred.id} className="flex flex-col py-4 px-6 border-b border-border-subtle/30 bg-surface-hover/20 transition-colors">
+                    <div className="flex items-center justify-between mb-2">
+                       <div className="w-[80px] font-mono text-white text-sm">R{String(pred.raceRound).padStart(2, '0')}</div>
+                       <div className="flex-1 font-display font-black text-white uppercase tracking-tight text-lg">Saudi Arabian GP</div>
+                       <div className="w-[80px] text-right text-white font-mono font-bold flex items-center justify-end gap-2 text-trgt-crimson">
+                          {pred.pointsEarned ? `+${pred.pointsEarned}` : 'TBD'}
+                       </div>
+                    </div>
+                    <div className="grid grid-cols-5 gap-2 text-xs uppercase text-text-muted mt-2">
+                       <div>P1: <span className="text-white">{driversData.find(d => d.id === pred.winner)?.name || "Pending"}</span></div>
+                       <div>P2: <span className="text-white">{driversData.find(d => d.id === pred.p2)?.name || "Pending"}</span></div>
+                       <div>P3: <span className="text-white">{driversData.find(d => d.id === pred.p3)?.name || "Pending"}</span></div>
+                       <div>FL: <span className="text-white">{driversData.find(d => d.id === pred.fastestLap)?.name || "-"}</span></div>
+                       <div>SC: <span className="text-white">{pred.safetyCar ? "Yes" : "No"}</span></div>
+                    </div>
+                 </div>
+               ))}
                
-               {/* Mock Row 3 */}
-               <div className="flex items-center justify-between py-4 px-6 border-b border-border-subtle/30 bg-surface-hover/20 hover:bg-surface-hover/50 transition-colors cursor-pointer group">
-                  <div className="w-[80px] font-mono text-white text-sm">R01</div>
-                  <div className="flex-1 font-display font-black text-white uppercase tracking-tight text-lg">Bahrain GP</div>
-                  <div className="w-[100px] text-right font-mono text-f1-green text-sm flex items-center justify-end gap-2">
-                     <div className="flex gap-1">
-                        <span className="w-2 h-2 rounded-full bg-f1-green" />
-                        <span className="w-2 h-2 rounded-full bg-f1-green" />
-                        <span className="w-2 h-2 rounded-full bg-trgt-crimson" />
-                        <span className="w-2 h-2 rounded-full bg-f1-green" />
-                     </div>
-                  </div>
-                  <div className="w-[80px] text-right text-white font-mono font-bold group-hover:text-trgt-crimson transition-colors flex items-center justify-end gap-2">
-                     +31 <ChevronRight className="w-4 h-4 text-text-muted" />
-                  </div>
-               </div>
+               {profileData?.predictions?.length === 0 && (
+                 <div className="p-8 text-center text-text-muted text-sm uppercase tracking-widest">
+                   No predictions locked yet.
+                 </div>
+               )}
             </Card>
           </section>
 
