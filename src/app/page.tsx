@@ -1,65 +1,204 @@
-import Image from "next/image";
+"use client";
+
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import Link from "next/link";
+import { Activity, Brain, Trophy } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="relative w-full overflow-hidden">
+      {/* ═══ HERO SECTION ═══ */}
+      <section className="relative min-h-[90vh] flex items-center pt-24 pb-20">
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-start justify-between gap-12">
+          
+          {/* Left Hero Content */}
+          <div className="flex-1 max-w-2xl text-left">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 glass"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-trgt-crimson opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-trgt-crimson" />
+              </span>
+              <span className="text-xs uppercase tracking-[0.2em] font-bold text-white/70">
+                SEASON 2026 // ROUND 1
+              </span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="font-display text-[64px] sm:text-[88px] md:text-[110px] font-black uppercase leading-[0.85] tracking-tight mb-6 text-white drop-shadow-2xl"
             >
-              Learning
-            </a>{" "}
-            center.
+              TARGET
+              <br />
+              <span className="text-trgt-crimson">EVERY</span>
+              <br />
+              LAP
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-text-secondary text-lg md:text-xl max-w-md mb-10 font-light leading-relaxed"
+            >
+              Live telemetry. Brutal AI-powered insights. Race predictions. Built for the obsessed Formula 1 fan.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex flex-col sm:flex-row items-start sm:items-center gap-6"
+            >
+              <Link
+                href="/live"
+                className="btn-angled bg-trgt-crimson text-white text-[14px] font-black uppercase tracking-[0.06em] px-10 py-4 hover:bg-trgt-crimson-deep transition-all duration-300 shadow-[0_0_30px_rgba(238,63,44,0.3)] hover:shadow-[0_0_50px_rgba(238,63,44,0.6)] flex items-center gap-2 group"
+              >
+                Watch Live
+                <span className="text-white/70 group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Right Floating Countdown */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.6 }}
+            className="w-full lg:w-auto lg:mt-32"
+          >
+            <div className="glass p-8 md:p-10 rounded-2xl max-w-md w-full relative group border-t-0 border-x-0 border-b-2 border-b-trgt-crimson/50 bg-[#111111]/80 backdrop-blur-md">
+              <div className="absolute inset-0 bg-gradient-to-br from-trgt-crimson/5 to-transparent rounded-2xl pointer-events-none transition-opacity group-hover:opacity-100 opacity-50" />
+              <div className="relative z-10 flex flex-col">
+                <span className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-2 font-medium">Next Race</span>
+                <h3 className="text-white font-bold font-display text-2xl uppercase tracking-tight mb-1">Saudi Arabian Grand Prix</h3>
+                <span className="text-white/40 text-sm font-sans mb-8">Jeddah Corniche Circuit</span>
+                
+                <div className="flex items-center justify-between gap-2 font-mono text-5xl font-normal tracking-tight">
+                  <div className="flex flex-col items-center">
+                    <span className="text-white drop-shadow-md">05</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Days</span>
+                  </div>
+                  <span className="text-trgt-crimson mb-8 text-2xl font-black">:</span>
+                  <div className="flex flex-col items-center">
+                    <span className="text-white drop-shadow-md">01</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Hrs</span>
+                  </div>
+                  <span className="text-trgt-crimson mb-8 text-2xl font-black">:</span>
+                  <div className="flex flex-col items-center">
+                    <span className="text-white drop-shadow-md">23</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Min</span>
+                  </div>
+                  <span className="text-trgt-crimson mb-8 text-2xl font-black">:</span>
+                  <div className="flex flex-col items-center">
+                    <span className="text-white drop-shadow-md">51</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Sec</span>
+                  </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-border-subtle/30 flex items-center justify-between">
+                   <Link
+                    href="/predict"
+                    className="btn-angled bg-trgt-crimson text-white text-[12px] font-bold uppercase tracking-[0.06em] px-6 py-2.5 hover:bg-trgt-crimson-deep transition-all duration-300"
+                   >
+                    Lock Prediction
+                   </Link>
+                   <span className="text-white/30 text-[12px] font-light">Jeddah • Saudi Arabia</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══ FEATURES ROW ═══ */}
+      <section className="relative z-20 w-full bg-black/40 border-y border-border-subtle/50 backdrop-blur-xl">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-24 md:py-32">
+          
+          <div className="mb-16">
+            <h2 className="font-display text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none text-white">
+              BUILT FOR
+              <br />
+              <span className="text-white/30">SPEED OBSESSION.</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+            <div className="relative group">
+              <span className="font-mono text-6xl md:text-8xl font-black text-trgt-crimson/10 absolute -top-8 -left-4 md:-top-10 md:-left-6 pointer-events-none transition-transform group-hover:scale-110 duration-500">
+                01
+              </span>
+              <div className="relative pt-8">
+                <h3 className="text-2xl font-black font-display uppercase tracking-tight text-white mb-4 flex items-center gap-3">
+                  Live Telemetry
+                </h3>
+                <p className="text-text-secondary text-[15px] leading-relaxed font-light">
+                  20-driver timing towers, tire strategies, gap charts, and live physical circuit mapping straight from the paddock.
+                </p>
+              </div>
+            </div>
+
+            <div className="relative group">
+              <span className="font-mono text-6xl md:text-8xl font-black text-trgt-crimson/10 absolute -top-8 -left-4 md:-top-10 md:-left-6 pointer-events-none transition-transform group-hover:scale-110 duration-500">
+                02
+              </span>
+              <div className="relative pt-8">
+                <h3 className="text-2xl font-black font-display uppercase tracking-tight text-white mb-4 flex items-center gap-3">
+                  AI Race Intel
+                </h3>
+                <p className="text-text-secondary text-[15px] leading-relaxed font-light">
+                  Surgical, aggressively factual race insights. Real-time pit window predictions and head-to-head strategy logic.
+                </p>
+              </div>
+            </div>
+
+            <div className="relative group">
+              <span className="font-mono text-6xl md:text-8xl font-black text-trgt-crimson/10 absolute -top-8 -left-4 md:-top-10 md:-left-6 pointer-events-none transition-transform group-hover:scale-110 duration-500">
+                03
+              </span>
+              <div className="relative pt-8">
+                <h3 className="text-2xl font-black font-display uppercase tracking-tight text-white mb-4 flex items-center gap-3">
+                  Global Predicts
+                </h3>
+                <p className="text-text-secondary text-[15px] leading-relaxed font-light">
+                  Lock in your podiums. Outsmart the grid. Track your global standing across the entire 24-race calendar.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ LIVE PREVIEW TEASER ═══ */}
+      <section className="relative w-full py-32">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col items-center justify-center text-center">
+          <span className="text-trgt-crimson text-xs uppercase tracking-[0.2em] font-bold mb-4 block">Command Center</span>
+          <h2 className="font-display text-5xl md:text-7xl font-black uppercase tracking-tighter text-white mb-8">
+            ENTER THE PIT WALL
+          </h2>
+          <p className="text-text-secondary text-lg max-w-2xl mx-auto mb-12 font-light leading-relaxed">
+            Experience the race like an engineer. Monitor every split, every tire change, and every battle. No fluff, just raw data.
           </p>
+          
+          <div className="group relative">
+            <div className="absolute -inset-1 bg-gradient-to-r from-trgt-crimson to-f1-purple blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-full" />
+            <Link
+              href="/live"
+              className="relative btn-angled bg-surface-deep text-white text-[14px] font-black uppercase tracking-[0.1em] px-12 py-5 border border-border-strong hover:border-trgt-crimson transition-colors"
+            >
+              Access Telemetry
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
     </div>
   );
 }
