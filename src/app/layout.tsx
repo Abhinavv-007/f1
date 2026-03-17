@@ -39,6 +39,8 @@ export default function RootLayout({
             loop
             muted
             playsInline
+            preload="metadata"
+            aria-hidden="true"
             className="absolute inset-0 h-full w-full object-cover opacity-30 object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-surface-deep/40 to-black/80" />
