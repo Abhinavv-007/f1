@@ -1,9 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Zap, Clock, Flag, LayoutDashboard, Brain } from "lucide-react";
+import { Zap, Flag, Brain } from "lucide-react";
 
 export default function LiveDashboard() {
   return (

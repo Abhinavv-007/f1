@@ -20,11 +20,32 @@ export function formatCountryFlag(country: string): string {
 
 export function formatNationalityFlag(code: string): string {
   const flags: Record<string, string> = {
+    "American": "🇺🇸",
+    "Argentine": "🇦🇷",
+    "Australian": "🇦🇺",
+    "Brazilian": "🇧🇷",
+    "British": "🇬🇧",
+    "Canadian": "🇨🇦",
+    "Chinese": "🇨🇳",
+    "Danish": "🇩🇰",
+    "Dutch": "🇳🇱",
+    "Finnish": "🇫🇮",
+    "French": "🇫🇷",
+    "German": "🇩🇪",
+    "Italian": "🇮🇹",
+    "Japanese": "🇯🇵",
+    "Mexican": "🇲🇽",
+    "Monegasque": "🇲🇨",
+    "New Zealander": "🇳🇿",
+    "Spanish": "🇪🇸",
+    "Thai": "🇹🇭",
     "NL": "🇳🇱", "NZ": "🇳🇿", "MC": "🇲🇨", "GB": "🇬🇧",
     "AU": "🇦🇺", "IT": "🇮🇹", "ES": "🇪🇸", "CA": "🇨🇦",
     "FR": "🇫🇷", "TH": "🇹🇭", "JP": "🇯🇵", "DE": "🇩🇪",
     "BR": "🇧🇷", "FI": "🇫🇮", "CN": "🇨🇳", "US": "🇺🇸",
-    "DK": "🇩🇰", "MX": "🇲🇽",
+    "DK": "🇩🇰", "MX": "🇲🇽", "AR": "🇦🇷",
   };
-  return flags[code] || "🏁";
+
+  const normalized = code.trim();
+  return flags[normalized] || flags[normalized.toUpperCase()] || "🏁";
 }

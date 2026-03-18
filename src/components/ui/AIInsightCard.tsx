@@ -10,19 +10,59 @@ interface AIInsightCardProps {
   className?: string;
 }
 
+interface InsightState {
+  key: string;
+  status: "loading" | "ready" | "error";
+  fact: string;
+}
+
 export function AIInsightCard({ circuitId, lap, className }: AIInsightCardProps) {
-  const [fact, setFact] = useState("");
-  const [loading, setLoading] = useState(true);
+  const requestKey = `${circuitId}-${lap ?? "general"}`;
+  const [state, setState] = useState<InsightState>({
+    key: requestKey,
+    status: "loading",
+    fact: "",
+  });
 
   useEffect(() => {
-    setLoading(true);
+    const controller = new AbortController();
     const url = `/api/facts?circuit=${encodeURIComponent(circuitId)}${lap ? `&lap=${lap}` : ""}`;
-    fetch(url)
-      .then((r) => r.json())
-      .then((d) => setFact(d.fact || ""))
-      .catch(() => setFact("Telemetry uplink unavailable."))
-      .finally(() => setLoading(false));
-  }, [circuitId, lap]);
+
+    fetch(url, { signal: controller.signal })
+      .then(async (response) => {
+        const payload = (await response.json()) as { fact?: string; error?: string };
+        if (!response.ok) {
+          throw new Error(payload.error || "Telemetry uplink unavailable.");
+        }
+
+        return payload;
+      })
+      .then((payload) => {
+        if (!controller.signal.aborted) {
+          setState({
+            key: requestKey,
+            status: "ready",
+            fact: payload.fact || "Telemetry uplink unavailable.",
+          });
+        }
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted) {
+          setState({
+            key: requestKey,
+            status: "error",
+            fact: error instanceof Error ? error.message : "Telemetry uplink unavailable.",
+          });
+        }
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, [circuitId, lap, requestKey]);
+
+  const loading = state.key !== requestKey || state.status === "loading";
+  const fact = state.key === requestKey ? state.fact : "";
 
   return (
     <div

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { TiltCard } from "@/components/ui/TiltCard";
-import { Trophy, Shield, ChevronUp, ChevronDown, Minus, Loader2 } from "lucide-react";
+import { Trophy, Shield, ChevronUp, Minus, Loader2 } from "lucide-react";
 
 type StandingTab = "drivers" | "constructors";
 

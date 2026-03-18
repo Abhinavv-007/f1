@@ -1,12 +1,13 @@
 [
-  { "id": "red_bull", "name": "Red Bull Racing", "color": "#3671C6", "base": "Milton Keynes, UK" },
-  { "id": "ferrari", "name": "Scuderia Ferrari", "color": "#E8002D", "base": "Maranello, Italy" },
-  { "id": "mclaren", "name": "McLaren F1 Team", "color": "#FF8000", "base": "Woking, UK" },
-  { "id": "mercedes", "name": "Mercedes-AMG Petronas", "color": "#27F4D2", "base": "Brackley, UK" },
-  { "id": "aston_martin", "name": "Aston Martin Aramco", "color": "#229971", "base": "Silverstone, UK" },
-  { "id": "alpine", "name": "Alpine F1 Team", "color": "#0093CC", "base": "Enstone, UK" },
-  { "id": "williams", "name": "Williams Racing", "color": "#64C4FF", "base": "Grove, UK" },
-  { "id": "racing_bulls", "name": "Visa Cash App RB", "color": "#6692FF", "base": "Faenza, Italy" },
-  { "id": "sauber", "name": "Stake F1 Team Kick Sauber", "color": "#52E252", "base": "Hinwil, Switzerland" },
-  { "id": "haas", "name": "MoneyGram Haas F1 Team", "color": "#B6BABD", "base": "Kannapolis, USA" }
+  { "id": "mercedes", "name": "Mercedes", "color": "#27F4D2", "base": "Brackley, UK" },
+  { "id": "ferrari", "name": "Ferrari", "color": "#E8002D", "base": "Maranello, Italy" },
+  { "id": "mclaren", "name": "McLaren", "color": "#FF8000", "base": "Woking, UK" },
+  { "id": "haas", "name": "Haas F1 Team", "color": "#B6BABD", "base": "Kannapolis, USA" },
+  { "id": "red_bull", "name": "Red Bull", "color": "#3671C6", "base": "Milton Keynes, UK" },
+  { "id": "rb", "name": "RB F1 Team", "color": "#6692FF", "base": "Faenza, Italy" },
+  { "id": "alpine", "name": "Alpine F1 Team", "color": "#FF87BC", "base": "Enstone, UK" },
+  { "id": "williams", "name": "Williams", "color": "#64C4FF", "base": "Grove, UK" },
+  { "id": "audi", "name": "Audi", "color": "#1BD35A", "base": "Hinwil, Switzerland" },
+  { "id": "cadillac", "name": "Cadillac F1 Team", "color": "#246BFF", "base": "Fishers, USA" },
+  { "id": "aston_martin", "name": "Aston Martin", "color": "#229971", "base": "Silverstone, UK" }
 ]

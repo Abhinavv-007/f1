@@ -14,11 +14,12 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         className={cn(
           "relative overflow-hidden rounded-xl border border-border-subtle bg-surface-deep transition-colors hover:border-border-strong",
-          glass && "glass",
+          glass && "glass engine-panel",
           className
         )}
         {...props}
       >
+        {glass && <div className="engine-rail" aria-hidden="true" />}
         {carbon && (
           <div className="absolute inset-0 carbon-texture opacity-20 pointer-events-none mix-blend-overlay" />
         )}
@@ -43,11 +44,12 @@ export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(
         transition={{ duration: 0.2, ease: "easeOut" }}
         className={cn(
           "relative overflow-hidden rounded-xl border border-border-subtle bg-surface-deep transition-colors hover:border-border-strong shadow-lg shadow-black/50",
-          glass && "glass",
+          glass && "glass engine-panel",
           className
         )}
         {...props}
       >
+        {glass && <div className="engine-rail" aria-hidden="true" />}
         {carbon && (
           <div className="absolute inset-0 carbon-texture opacity-30 pointer-events-none mix-blend-overlay" />
         )}

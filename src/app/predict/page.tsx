@@ -10,13 +10,24 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import driversData from "@/data/drivers.json";
 import { submitPrediction } from "@/app/actions/predict";
 import { useRouter } from "next/navigation";
+import { useRaceSession } from "@/hooks/useRaceSession";
 
 export default function PredictPage() {
   const { user } = useAuth();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [isLocked, setIsLocked] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const { session, countdown, error: sessionError, isLoading: sessionLoading, isLocked: sessionLocked } =
+    useRaceSession();
+
+  const isLocked = hasSubmitted || sessionLocked;
+  const timeLeft = sessionLoading ? "00:00:00:00" : countdown.compact;
+  const sessionName = session
+    ? `Round ${session.round} // ${session.sessionName}`
+    : sessionError
+      ? "Connection Error"
+      : "Loading...";
 
   const [form, setForm] = useState({
     p1: "",
@@ -41,9 +52,17 @@ export default function PredictPage() {
       return;
     }
 
+    if (new Set([form.p1, form.p2, form.p3]).size !== 3) {
+      setErrorMsg("Podium picks must be three different drivers.");
+      return;
+    }
+
     startTransition(async () => {
       const formData = new FormData();
       formData.append("userId", user.uid);
+      formData.append("userEmail", user.email || "");
+      formData.append("userName", user.displayName || "");
+      formData.append("userImage", user.photoURL || "");
       formData.append("p1", form.p1);
       formData.append("p2", form.p2);
       formData.append("p3", form.p3);
@@ -56,7 +75,7 @@ export default function PredictPage() {
       if (res?.error) {
         setErrorMsg(res.error);
       } else {
-        setIsLocked(true);
+        setHasSubmitted(true);
         router.push("/profile");
       }
     });
@@ -90,7 +109,7 @@ export default function PredictPage() {
             RACE <span className="text-trgt-crimson">PREDICTIONS</span>
           </h1>
           <p className="text-text-secondary text-base uppercase tracking-widest font-bold">
-            Round 1 // Saudi Arabian Grand Prix
+            {sessionName}
           </p>
         </motion.div>
 
@@ -104,8 +123,8 @@ export default function PredictPage() {
               <div className="absolute inset-0 bg-gradient-to-l from-trgt-crimson/20 to-transparent pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity" />
               <div className="flex flex-col relative z-10">
                 <span className="text-[10px] uppercase text-trgt-crimson tracking-widest font-black mb-1 animate-pulse">Lockout Timer</span>
-                <div className="font-mono text-3xl font-black text-white tracking-tighter drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]">
-                  05:01:23:51
+                <div className="font-mono text-3xl md:text-4xl font-black text-white tracking-tighter drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]">
+                  {timeLeft}
                 </div>
               </div>
               <div className="w-14 h-14 rounded-full bg-trgt-crimson/20 flex items-center justify-center text-trgt-crimson relative z-10 border border-trgt-crimson/50 group-hover:scale-110 transition-transform">
@@ -139,7 +158,7 @@ export default function PredictPage() {
                  <div className="absolute inset-0 bg-gradient-to-t from-trgt-crimson/5 to-transparent pointer-events-none rounded-xl" />
                  
                  {/* 2nd Place */}
-                 <div className="flex flex-col gap-4 pt-12 sm:pt-16 order-2 sm:order-1 relative z-20 group">
+                 <div className="flex flex-col gap-4 pt-4 sm:pt-16 order-2 sm:order-1 relative z-20 group">
                    <div className="text-center transform group-hover:-translate-y-2 transition-transform">
                      <span className="font-display text-5xl font-black text-white/20 block mb-2 leading-none drop-shadow-md group-hover:text-white/40 transition-colors">P2</span>
                      <span className="text-[10px] uppercase tracking-widest text-[#B0BEC5] font-black group-hover:text-white transition-colors">+5 PTS</span>
@@ -156,7 +175,7 @@ export default function PredictPage() {
                  </div>
 
                  {/* 1st Place (Winner) */}
-                 <div className="flex flex-col gap-4 order-1 sm:order-2 relative z-30 -mt-4 sm:-mt-8 group">
+                 <div className="flex flex-col gap-4 order-1 sm:order-2 relative z-30 mb-8 sm:mb-0 mt-4 sm:-mt-8 group">
                    <div className="text-center transform group-hover:-translate-y-4 transition-transform duration-300">
                      <Award className="w-10 h-10 text-trgt-crimson mx-auto mb-2 opacity-50 group-hover:opacity-100 group-hover:drop-shadow-[0_0_15px_rgba(238,63,44,0.8)] transition-all" />
                      <span className="font-display text-7xl font-black text-trgt-crimson block mb-2 leading-none drop-shadow-[0_0_20px_rgba(238,63,44,0.3)]">P1</span>
@@ -174,7 +193,7 @@ export default function PredictPage() {
                  </div>
 
                  {/* 3rd Place */}
-                 <div className="flex flex-col gap-4 pt-12 sm:pt-24 order-3 sm:order-3 relative z-10 group">
+                 <div className="flex flex-col gap-4 pt-4 sm:pt-24 order-3 sm:order-3 relative z-10 group">
                    <div className="text-center transform group-hover:-translate-y-2 transition-transform">
                      <span className="font-display text-4xl font-black text-white/10 block mb-2 leading-none group-hover:text-white/30 transition-colors">P3</span>
                      <span className="text-[10px] uppercase tracking-widest text-[#CD7F32] font-black group-hover:text-white transition-colors">+5 PTS</span>

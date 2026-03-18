@@ -13,17 +13,20 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
 
   const handleGoogleSignIn = async () => {
+    if (!auth) {
+      setError("Authentication is not configured.");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      // User is signed in. We can redirect them or let a layout listen to auth state.
       console.log("Logged in as:", result.user.displayName);
-      // Let standard Next.js routing handle the redirect or we can push
       window.location.href = "/profile";
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Failed to authenticate with Google.");
+    } catch (error) {
+      console.error(error);
+      setError(error instanceof Error ? error.message : "Failed to authenticate with Google.");
     } finally {
       setIsLoading(false);
     }

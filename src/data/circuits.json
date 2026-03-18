@@ -161,7 +161,7 @@
   },
   {
     "id": "spain",
-    "name": "Spanish Grand Prix",
+    "name": "Barcelona Grand Prix",
     "circuit": "Circuit de Barcelona-Catalunya",
     "country": "Spain",
     "city": "Barcelona",
@@ -178,6 +178,26 @@
     "tireDegradation": 4,
     "type": "permanent",
     "drsZones": 2
+  },
+  {
+    "id": "madring",
+    "name": "Spanish Grand Prix",
+    "circuit": "Madring",
+    "country": "Spain",
+    "city": "Madrid",
+    "lat": 40.46528,
+    "lng": -3.61528,
+    "timezone": "Europe/Madrid",
+    "lapRecord": "TBD",
+    "lapRecordHolder": "Benchmark pending",
+    "lapRecordYear": 2026,
+    "turns": 22,
+    "length": "5.416km",
+    "laps": 57,
+    "overtakingRating": 0,
+    "tireDegradation": 0,
+    "type": "hybrid",
+    "drsZones": 0
   },
   {
     "id": "canada",

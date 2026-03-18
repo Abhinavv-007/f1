@@ -2,22 +2,23 @@
 
 import { cn } from "@/lib/utils";
 import { motion, HTMLMotionProps } from "framer-motion";
-import { forwardRef } from "react";
+import { forwardRef, type ReactNode } from "react";
 
 export interface ButtonProps extends HTMLMotionProps<"button"> {
-  variant?: "primary" | "ghost" | "pill";
+  variant?: "primary" | "ghost" | "pill" | "glass";
   size?: "sm" | "md" | "lg";
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", children, ...props }, ref) => {
     
-    const baseStyles = "inline-flex items-center justify-center font-display uppercase tracking-widest transition-colors focus:outline-none focus:ring-2 focus:ring-trgt-crimson/50 disabled:opacity-50 disabled:pointer-events-none";
+    const baseStyles = "relative inline-flex items-center justify-center overflow-hidden font-display uppercase tracking-widest transition-colors focus:outline-none focus:ring-2 focus:ring-trgt-crimson/50 disabled:opacity-50 disabled:pointer-events-none";
     
     const variants = {
-      primary: "bg-trgt-crimson text-white hover:bg-trgt-crimson-deep hover:shadow-[0_0_20px_rgba(238,63,44,0.3)] border border-trgt-crimson-deep/50",
-      ghost: "bg-surface-elevated text-white border border-border-subtle hover:bg-surface-hover hover:border-border-strong glass",
-      pill: "rounded-full bg-surface-elevated text-white border border-border-subtle hover:bg-surface-hover px-6 backdrop-blur-md",
+      primary: "glass-button bg-[linear-gradient(135deg,rgba(238,63,44,0.64),rgba(238,63,44,0.26)_42%,rgba(0,0,0,0.5)_100%)] text-white border-trgt-crimson/30",
+      ghost: "glass-button text-white",
+      pill: "glass-button rounded-full text-white px-6",
+      glass: "glass-button text-white",
     };
 
     const sizes = {
@@ -34,7 +35,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(baseStyles, variants[variant], sizes[size], variant !== "pill" && "rounded-sm", className)}
         {...props}
       >
-        {children}
+        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-50" aria-hidden="true" />
+        <span className="relative z-10">{children as ReactNode}</span>
       </motion.button>
     );
   }

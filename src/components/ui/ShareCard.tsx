@@ -7,19 +7,23 @@ import driversData from "@/data/drivers.json";
 
 interface ShareCardProps {
   prediction: {
-    winner: string;
-    p2: string;
-    p3: string;
-    fastestLap?: string;
-    safetyCar?: boolean;
-    winningMargin?: string;
+    winner: string | null;
+    p2: string | null;
+    p3: string | null;
+    fastestLap?: string | null;
+    safetyCar?: boolean | null;
+    winningMargin?: string | null;
     season: number;
     raceRound: number;
   };
   onClose?: () => void;
 }
 
-function getDriverName(id: string) {
+function getDriverName(id?: string | null) {
+  if (!id) {
+    return "Pending";
+  }
+
   const driver = driversData.find((d) => d.code === id);
   return driver ? `${driver.firstName} ${driver.lastName}` : id;
 }

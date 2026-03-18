@@ -74,7 +74,13 @@ export const BADGES: BadgeDefinition[] = [
   },
 ];
 
-export function computeBadges(predictions: any[]): BadgeId[] {
+interface BadgePrediction {
+  pointsEarned?: number | null;
+  accuracyScore?: number | null;
+  fastestLap?: string | null;
+}
+
+export function computeBadges(predictions: BadgePrediction[]): BadgeId[] {
   const earned: BadgeId[] = [];
 
   if (predictions.length >= 1) earned.push("first_blood");

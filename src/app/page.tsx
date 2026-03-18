@@ -1,12 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import Link from "next/link";
-import { Activity, Brain, Trophy } from "lucide-react";
+import { useRaceSession } from "@/hooks/useRaceSession";
 
 export default function Home() {
+  const { session, countdown, error } = useRaceSession();
+  const seasonLabel = session
+    ? `SEASON ${session.season} // ROUND ${String(session.round).padStart(2, "0")}`
+    : "SEASON // LOADING";
+  const locationLabel = session ? [session.city, session.country].filter(Boolean).join(" • ") : "Location loading";
+  const cardLabel = session?.status === "completed" ? "Season Complete" : session?.isLocked ? "Session Locked" : "Next Race";
+
   return (
     <div className="relative w-full overflow-hidden">
       {/* ═══ HERO SECTION ═══ */}
@@ -26,7 +31,7 @@ export default function Home() {
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-trgt-crimson" />
               </span>
               <span className="text-xs uppercase tracking-[0.2em] font-bold text-white/70">
-                SEASON 2026 // ROUND 1
+                {seasonLabel}
               </span>
             </motion.div>
 
@@ -78,28 +83,32 @@ export default function Home() {
             <div className="glass p-8 md:p-10 rounded-2xl max-w-md w-full relative group border-t-0 border-x-0 border-b-2 border-b-trgt-crimson/50 bg-[#111111]/80 backdrop-blur-md">
               <div className="absolute inset-0 bg-gradient-to-br from-trgt-crimson/5 to-transparent rounded-2xl pointer-events-none transition-opacity group-hover:opacity-100 opacity-50" />
               <div className="relative z-10 flex flex-col">
-                <span className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-2 font-medium">Next Race</span>
-                <h3 className="text-white font-bold font-display text-2xl uppercase tracking-tight mb-1">Saudi Arabian Grand Prix</h3>
-                <span className="text-white/40 text-sm font-sans mb-8">Jeddah Corniche Circuit</span>
+                <span className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-2 font-medium">{cardLabel}</span>
+                <h3 className="text-white font-bold font-display text-2xl uppercase tracking-tight mb-1">
+                  {session?.sessionName || (error ? "Schedule Offline" : "Loading Race")}
+                </h3>
+                <span className="text-white/40 text-sm font-sans mb-8">
+                  {session?.circuit || "Circuit TBD"}
+                </span>
                 
                 <div className="flex items-center justify-between gap-2 font-mono text-5xl font-normal tracking-tight">
                   <div className="flex flex-col items-center">
-                    <span className="text-white drop-shadow-md">05</span>
+                    <span className="text-white drop-shadow-md">{countdown.days}</span>
                     <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Days</span>
                   </div>
                   <span className="text-trgt-crimson mb-8 text-2xl font-black">:</span>
                   <div className="flex flex-col items-center">
-                    <span className="text-white drop-shadow-md">01</span>
+                    <span className="text-white drop-shadow-md">{countdown.hours}</span>
                     <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Hrs</span>
                   </div>
                   <span className="text-trgt-crimson mb-8 text-2xl font-black">:</span>
                   <div className="flex flex-col items-center">
-                    <span className="text-white drop-shadow-md">23</span>
+                    <span className="text-white drop-shadow-md">{countdown.minutes}</span>
                     <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Min</span>
                   </div>
                   <span className="text-trgt-crimson mb-8 text-2xl font-black">:</span>
                   <div className="flex flex-col items-center">
-                    <span className="text-white drop-shadow-md">51</span>
+                    <span className="text-white drop-shadow-md">{countdown.seconds}</span>
                     <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Sec</span>
                   </div>
                 </div>
@@ -109,9 +118,9 @@ export default function Home() {
                     href="/predict"
                     className="btn-angled bg-trgt-crimson text-white text-[12px] font-bold uppercase tracking-[0.06em] px-6 py-2.5 hover:bg-trgt-crimson-deep transition-all duration-300"
                    >
-                    Lock Prediction
+                    {session?.isLocked ? "View Predictions" : "Lock Prediction"}
                    </Link>
-                   <span className="text-white/30 text-[12px] font-light">Jeddah • Saudi Arabia</span>
+                   <span className="text-white/30 text-[12px] font-light">{locationLabel}</span>
                 </div>
               </div>
             </div>

@@ -1,20 +1,7 @@
 import type { Metadata } from "next";
-import { Rubik, Rubik_Mono_One } from "next/font/google";
 import { AppShell } from "@/components/layout/AppShell";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import "./globals.css";
-
-const rubik = Rubik({
-  variable: "--font-rubik",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-});
-
-const rubikMono = Rubik_Mono_One({
-  variable: "--font-rubik-mono",
-  subsets: ["latin"],
-  weight: "400",
-});
 
 export const metadata: Metadata = {
   title: "TRGT | Target Every Lap",
@@ -35,12 +22,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "TRGT | Target Every Lap",
-    description: "An elite Formula 1 fan platform. Live standings, predictions, circuit stats, and race intelligence — all in one place.",
-    images: ["/og-image.png"],
-  },
 };
 
 export default function RootLayout({
@@ -51,10 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${rubik.variable} ${rubikMono.variable} font-sans antialiased min-h-screen bg-black text-foreground selection:bg-trgt-crimson selection:text-white`}
+        className="font-sans antialiased min-h-screen bg-black text-foreground selection:bg-trgt-crimson selection:text-white"
       >
         <div className="fixed inset-0 z-[-1] bg-black">
-          {/* Ambient Video Loop */}
           <video
             src="/bg.mp4"
             autoPlay
@@ -63,9 +43,13 @@ export default function RootLayout({
             playsInline
             preload="metadata"
             aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover opacity-30 object-center"
+            className="absolute inset-0 h-full w-full object-cover opacity-20 object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-surface-deep/40 to-black/80" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(238,63,44,0.2),transparent_24%),radial-gradient(circle_at_84%_14%,rgba(255,255,255,0.09),transparent_18%),radial-gradient(circle_at_70%_78%,rgba(238,63,44,0.12),transparent_22%)]" />
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(105deg,rgba(255,255,255,0.018)_0px,rgba(255,255,255,0.018)_2px,transparent_2px,transparent_34px)] opacity-40" />
+          <div className="absolute left-[-10%] right-[-10%] top-[16%] h-px bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-60" />
+          <div className="absolute left-[-10%] right-[-10%] top-[calc(16%+18px)] h-[1px] bg-gradient-to-r from-transparent via-trgt-crimson/40 to-transparent opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-surface-deep/45 to-black/90" />
         </div>
         
         <div className="relative z-10 flex min-h-screen flex-col">

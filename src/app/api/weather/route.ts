@@ -1,13 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-
-export const runtime = 'edge';
 import circuits from "@/data/circuits.json";
 
-// Read from environment
-const OPENWEATHER_KEY = process.env.OPENWEATHER_KEY;
+export const runtime = "edge";
 
-const weatherCache = new Map<string, { data: unknown; timestamp: number }>();
-const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+const OPENWEATHER_KEY = process.env.OPENWEATHER_KEY;
+const weatherCache = new Map<string, { data: WeatherResponse; timestamp: number }>();
+const CACHE_TTL = 10 * 60 * 1000;
+
+interface WeatherResponse {
+  temp: number;
+  feels_like: number;
+  humidity: number;
+  wind: number;
+  rain: number;
+  desc: string;
+  circuit: string;
+  source: "live" | "cache";
+  updatedAt: string;
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -17,53 +27,75 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Missing circuit parameter" }, { status: 400 });
   }
 
-  const circuit = circuits.find((c) => c.id === circuitId);
+  const circuit = circuits.find((entry) => entry.id === circuitId);
   if (!circuit) {
     return NextResponse.json({ error: "Circuit not found" }, { status: 404 });
   }
 
-  // Check cache
   const cached = weatherCache.get(circuitId);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
     return NextResponse.json(cached.data);
   }
 
+  if (!OPENWEATHER_KEY) {
+    return NextResponse.json(
+      { error: "Weather API key is not configured for live conditions." },
+      { status: 503 }
+    );
+  }
+
   try {
-    if (!OPENWEATHER_KEY) throw new Error("Missing WEATHER API KEY");
     const res = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${circuit.lat}&lon=${circuit.lng}&appid=${OPENWEATHER_KEY}&units=metric`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${circuit.lat}&lon=${circuit.lng}&appid=${OPENWEATHER_KEY}&units=metric`,
+      { cache: "no-store" }
     );
 
     if (!res.ok) {
-      throw new Error("Weather API failed");
+      throw new Error(`OpenWeather returned ${res.status}`);
     }
 
-    const data = await res.json();
-
-    const result = {
-      temp: Math.round(data.main.temp),
-      feels_like: Math.round(data.main.feels_like),
-      humidity: data.main.humidity,
-      wind: Math.round(data.wind.speed * 3.6), // m/s to km/h
-      rain: data.rain?.["1h"] || 0,
-      desc: data.weather?.[0]?.description || "Unknown",
-      circuit: circuitId,
+    const data = (await res.json()) as {
+      dt?: number;
+      main?: {
+        temp?: number;
+        feels_like?: number;
+        humidity?: number;
+      };
+      wind?: {
+        speed?: number;
+      };
+      rain?: {
+        ["1h"]?: number;
+      };
+      weather?: Array<{
+        description?: string;
+      }>;
     };
 
-    // Cache result
-    weatherCache.set(circuitId, { data: result, timestamp: Date.now() });
-
-    return NextResponse.json(result);
-  } catch {
-    // Fallback data if OpenWeather is down
-    return NextResponse.json({
-      temp: 28,
-      feels_like: 30,
-      humidity: 45,
-      wind: 12,
-      rain: 0,
-      desc: "Clear sky",
+    const result: WeatherResponse = {
+      temp: Math.round(data.main?.temp ?? 0),
+      feels_like: Math.round(data.main?.feels_like ?? 0),
+      humidity: data.main?.humidity ?? 0,
+      wind: Math.round((data.wind?.speed ?? 0) * 3.6),
+      rain: data.rain?.["1h"] ?? 0,
+      desc: data.weather?.[0]?.description ?? "Unavailable",
       circuit: circuitId,
-    });
+      source: "live",
+      updatedAt: new Date((data.dt ?? Math.floor(Date.now() / 1000)) * 1000).toISOString(),
+    };
+
+    weatherCache.set(circuitId, { data: result, timestamp: Date.now() });
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("Weather API Error:", error);
+
+    if (cached) {
+      return NextResponse.json({ ...cached.data, source: "cache" as const });
+    }
+
+    return NextResponse.json(
+      { error: "Live weather is temporarily unavailable." },
+      { status: 502 }
+    );
   }
 }

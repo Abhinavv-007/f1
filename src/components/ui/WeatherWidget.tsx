@@ -15,23 +15,45 @@ interface WeatherData {
   wind: number;
   rain: number;
   desc: string;
+  source?: "live" | "cache";
+  updatedAt?: string;
 }
 
 export function WeatherWidget({ circuitId }: WeatherWidgetProps) {
   const [data, setData] = useState<WeatherData | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/weather?circuit=${circuitId}`)
-      .then((res) => res.json())
+    let cancelled = false;
+
+    fetch(`/api/weather?circuit=${circuitId}`, { cache: "no-store" })
+      .then(async (res) => {
+        const json = (await res.json()) as WeatherData & { error?: string };
+        if (!res.ok) {
+          throw new Error(json.error || "Failed to load weather");
+        }
+
+        return json;
+      })
       .then((json) => {
-        setData(json);
-        setLoading(false);
+        if (!cancelled) {
+          setData(json);
+          setError(null);
+          setLoading(false);
+        }
       })
       .catch((err) => {
-        console.error("Failed to load weather", err);
-        setLoading(false);
+        if (!cancelled) {
+          console.error("Failed to load weather", err);
+          setError(err instanceof Error ? err.message : "Failed to load weather");
+          setLoading(false);
+        }
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [circuitId]);
 
   if (loading) {
@@ -42,7 +64,18 @@ export function WeatherWidget({ circuitId }: WeatherWidgetProps) {
     );
   }
 
-  if (!data) return null;
+  if (error || !data) {
+    return (
+      <Card glass className="p-6 bg-black/40 border-border-strong min-h-[120px] flex flex-col justify-center">
+        <h2 className="font-display text-xl text-white uppercase tracking-tight font-bold mb-2">
+          Live Track Weather
+        </h2>
+        <p className="text-sm text-text-secondary leading-relaxed">
+          {error ?? "Weather data is currently unavailable."}
+        </p>
+      </Card>
+    );
+  }
 
   return (
     <Card glass className="p-6 bg-black/40 border-border-strong relative overflow-hidden group hover:border-blue-500/50 transition-colors">
@@ -63,6 +96,9 @@ export function WeatherWidget({ circuitId }: WeatherWidgetProps) {
             </div>
             <span className="text-xs uppercase tracking-widest text-text-muted mt-2 capitalize font-bold">
                {data.desc}
+            </span>
+            <span className="text-[10px] uppercase tracking-widest text-text-muted mt-2 font-bold">
+               {data.source === "cache" ? "Cached conditions" : "Live conditions"}
             </span>
          </div>
          

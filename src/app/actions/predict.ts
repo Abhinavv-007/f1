@@ -1,34 +1,67 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { fetchSessionSnapshot } from "@/lib/race";
 import { revalidatePath } from "next/cache";
 
-export async function submitPrediction(formData: FormData) {
-  // In a real app we'd get the user ID from the session securely on the server
-  // For now we get it from the payload
-  const userId = formData.get("userId") as string;
-  const p1 = formData.get("p1") as string;
-  const p2 = formData.get("p2") as string;
-  const p3 = formData.get("p3") as string;
-  const fastestLap = formData.get("fastestLap") as string;
-  const firstRetirement = formData.get("firstRetirement") as string;
-  const safetyCar = formData.get("safetyCar") === "true";
-  const winningMargin = formData.get("winningMargin") as string;
-  const season = 2025;
-  const raceRound = 1;
+function readFormValue(formData: FormData, key: string): string {
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
+}
 
-  if (!userId || !p1 || !p2 || !p3) {
+export async function submitPrediction(formData: FormData) {
+  const userId = readFormValue(formData, "userId");
+  const userEmail = readFormValue(formData, "userEmail");
+  const userName = readFormValue(formData, "userName");
+  const userImage = readFormValue(formData, "userImage");
+  const p1 = readFormValue(formData, "p1");
+  const p2 = readFormValue(formData, "p2");
+  const p3 = readFormValue(formData, "p3");
+  const fastestLap = readFormValue(formData, "fastestLap");
+  const firstRetirement = readFormValue(formData, "firstRetirement");
+  const safetyCar = formData.get("safetyCar") === "true";
+  const winningMargin = readFormValue(formData, "winningMargin");
+
+  if (!userId || !userEmail || !p1 || !p2 || !p3) {
     return { error: "Missing required prediction fields" };
   }
 
+  if (new Set([p1, p2, p3]).size !== 3) {
+    return { error: "Podium picks must be three different drivers." };
+  }
+
   try {
-    // Upsert so users can update their prediction before lockout instead of throwing unique constraint error
+    const session = await fetchSessionSnapshot(new Date());
+
+    if (!session.round || !session.season) {
+      return { error: "No active race weekend is available for predictions." };
+    }
+
+    if (session.isLocked) {
+      return { error: `Predictions are locked for Round ${session.round}.` };
+    }
+
+    await prisma.user.upsert({
+      where: { id: userId },
+      update: {
+        email: userEmail,
+        name: userName || null,
+        image: userImage || null,
+      },
+      create: {
+        id: userId,
+        email: userEmail,
+        name: userName || null,
+        image: userImage || null,
+      },
+    });
+
     const prediction = await prisma.prediction.upsert({
       where: {
         userId_season_raceRound: {
           userId,
-          season,
-          raceRound,
+          season: session.season,
+          raceRound: session.round,
         },
       },
       update: {
@@ -39,12 +72,12 @@ export async function submitPrediction(formData: FormData) {
         firstRetirement,
         safetyCar,
         winningMargin,
-        locked: true,
+        locked: false,
       },
       create: {
         userId,
-        season,
-        raceRound,
+        season: session.season,
+        raceRound: session.round,
         winner: p1,
         p2,
         p3,
@@ -52,15 +85,16 @@ export async function submitPrediction(formData: FormData) {
         firstRetirement,
         safetyCar,
         winningMargin,
-        locked: true,
+        locked: false,
       },
     });
 
     revalidatePath("/profile");
     revalidatePath("/predict");
+    revalidatePath("/leaderboard");
     return { success: true, prediction };
-  } catch (err: any) {
-    console.error("Prediction error:", err);
+  } catch (error) {
+    console.error("Prediction error:", error);
     return { error: "Database error saving prediction" };
   }
 }

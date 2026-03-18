@@ -1,6 +1,6 @@
 "use client";
 
-import { BADGES, BadgeDefinition } from "@/lib/badges";
+import { BADGES } from "@/lib/badges";
 import { Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 

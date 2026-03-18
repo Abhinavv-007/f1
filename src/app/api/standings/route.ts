@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-
-export const runtime = 'edge';
 import { formatNationalityFlag } from "@/lib/utils";
 
+export const runtime = "edge";
+
 const standingsCache = new Map<string, { data: unknown; timestamp: number }>();
-const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+const CACHE_TTL = 5 * 60 * 1000;
 
 export async function GET() {
   const cached = standingsCache.get("standings");
@@ -13,10 +13,9 @@ export async function GET() {
   }
 
   try {
-    // Fetch directly from Jolpica API (Ergast backward compatible) for 2024 season assuming 2025 isn't fully live
     const [driverRes, constructorRes] = await Promise.all([
-      fetch("http://api.jolpi.ca/ergast/f1/current/driverStandings.json", { cache: "no-store" }),
-      fetch("http://api.jolpi.ca/ergast/f1/current/constructorStandings.json", { cache: "no-store" })
+      fetch("https://api.jolpi.ca/ergast/f1/current/driverStandings.json", { cache: "no-store" }),
+      fetch("https://api.jolpi.ca/ergast/f1/current/constructorStandings.json", { cache: "no-store" }),
     ]);
 
     if (!driverRes.ok || !constructorRes.ok) {
@@ -29,7 +28,6 @@ export async function GET() {
     const rawDriverStandings = driverData.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings || [];
     const rawConstructorStandings = constructorData.MRData?.StandingsTable?.StandingsLists?.[0]?.ConstructorStandings || [];
 
-    // Transform Jolpica/Ergast format into our App's format
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const driverStandings = rawDriverStandings.map((ds: any) => ({
       position: parseInt(ds.position, 10),
@@ -59,12 +57,15 @@ export async function GET() {
     return NextResponse.json(result);
   } catch (error) {
     console.error("Standings API Error:", error);
-    // If external fetch fails, return an empty structured response to prevent 500 crashes
+
+    if (cached) {
+      return NextResponse.json(cached.data);
+    }
+
     return NextResponse.json({ drivers: [], constructors: [] }, { status: 502 });
   }
 }
 
-// Helper to map Ergast constructor IDs to custom team colors
 function getConstructorColor(id: string): string {
   const colors: Record<string, string> = {
     red_bull: "#3671C6",
@@ -75,6 +76,9 @@ function getConstructorColor(id: string): string {
     alpine: "#FF87BC",
     williams: "#64C4FF",
     rb: "#6692FF",
+    racing_bulls: "#6692FF",
+    audi: "#1BD35A",
+    cadillac: "#246BFF",
     sauber: "#52E252",
     haas: "#B6BABD",
   };

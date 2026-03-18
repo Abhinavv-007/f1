@@ -24,9 +24,9 @@
   --color-f1-green: #00FF88;
   --color-f1-yellow: #FFD700;
 
-  --font-sans: var(--font-rubik), sans-serif;
-  --font-mono: var(--font-rubik-mono), monospace;
-  --font-display: var(--font-rubik), sans-serif;
+  --font-sans: "Rubik", "Avenir Next", "Segoe UI", sans-serif;
+  --font-mono: "Rubik Mono One", "Space Mono", "SFMono-Regular", monospace;
+  --font-display: "Rubik", "Avenir Next", "Segoe UI", sans-serif;
 }
 
 :root {
@@ -44,76 +44,152 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image:
+    radial-gradient(circle at top left, rgba(238, 63, 44, 0.12), transparent 30%),
+    radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.06), transparent 22%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent 35%);
 }
 
-/* Page background grid + underglow */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -2;
   background-image:
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 80px 80px;
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px),
+    repeating-linear-gradient(115deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 2px, transparent 2px, transparent 28px);
+  background-size: 80px 80px, 80px 80px, auto;
   pointer-events: none;
+  mask-image: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent 80%);
 }
 
 body::after {
   content: '';
   position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 600px;
-  height: 600px;
+  inset: auto 0 -12% auto;
+  width: min(48vw, 760px);
+  height: min(48vw, 760px);
   z-index: -1;
-  background: radial-gradient(circle, rgba(238,63,44,0.08) 0%, transparent 70%);
+  background:
+    radial-gradient(circle, rgba(238,63,44,0.16) 0%, rgba(238,63,44,0.04) 32%, transparent 72%),
+    radial-gradient(circle at 30% 35%, rgba(255,255,255,0.05), transparent 25%);
   pointer-events: none;
+  filter: blur(12px);
 }
 
-/* Carbon Fiber Texture */
 .carbon-texture {
   background-image:
     repeating-linear-gradient(
       45deg,
-      rgba(255,255,255,0.015) 0px,
-      rgba(255,255,255,0.015) 1px,
+      rgba(255,255,255,0.018) 0px,
+      rgba(255,255,255,0.018) 1px,
       transparent 1px,
       transparent 4px
     ),
     repeating-linear-gradient(
       -45deg,
-      rgba(255,255,255,0.015) 0px,
-      rgba(255,255,255,0.015) 1px,
+      rgba(255,255,255,0.018) 0px,
+      rgba(255,255,255,0.018) 1px,
       transparent 1px,
       transparent 4px
-    );
+    ),
+    linear-gradient(180deg, rgba(255,255,255,0.015), transparent 30%, rgba(255,255,255,0.02) 100%);
 }
 
-/* Glass card matches f1-1 styling */
 .glass {
-  background: rgba(10,10,10,0.8);
-  backdrop-filter: blur(40px) saturate(200%);
-  -webkit-backdrop-filter: blur(40px) saturate(200%);
-  border: 0.5px solid rgba(255,255,255,0.08);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.015) 18%, rgba(10,10,10,0.72) 52%, rgba(0,0,0,0.82) 100%);
+  backdrop-filter: blur(34px) saturate(180%);
+  -webkit-backdrop-filter: blur(34px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.1);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.06),
-    0 0 40px rgba(238,63,44,0.04);
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -20px 30px rgba(0,0,0,0.28),
+    0 20px 50px rgba(0,0,0,0.28),
+    0 0 32px rgba(238,63,44,0.06);
 }
 .glass::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 55%);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 22%, transparent 52%),
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 20%, transparent 82%, rgba(255,255,255,0.03) 100%);
   pointer-events: none;
   border-radius: inherit;
 }
+.glass::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.04);
+  mask-image: linear-gradient(135deg, rgba(255,255,255,0.9), transparent 55%);
+}
 .glass:hover {
-  border-color: rgba(238,63,44,0.4);
-  box-shadow: 0 0 50px rgba(238,63,44,0.15), inset 0 0 20px rgba(238,63,44,0.05);
+  border-color: rgba(238,63,44,0.36);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.14),
+    inset 0 -20px 30px rgba(0,0,0,0.32),
+    0 24px 64px rgba(0,0,0,0.34),
+    0 0 54px rgba(238,63,44,0.14);
 }
 
-/* Angled Button from f1-1 */
+.engine-panel {
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.025), transparent 20%),
+    linear-gradient(90deg, rgba(255,255,255,0.02), transparent 20%, transparent 80%, rgba(255,255,255,0.02));
+}
+
+.engine-panel > .engine-rail {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, rgba(238,63,44,0.85), transparent);
+}
+
+.glass-button {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.03) 14%, rgba(0,0,0,0.36) 100%),
+    linear-gradient(135deg, rgba(238,63,44,0.18), rgba(255,255,255,0.02) 32%, rgba(0,0,0,0.42) 88%);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.16),
+    inset 0 -12px 20px rgba(0,0,0,0.22),
+    0 14px 26px rgba(0,0,0,0.22),
+    0 0 28px rgba(238,63,44,0.08);
+}
+
+.glass-button::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent 38%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.glass-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+  transform: translateX(-180%) skewX(-22deg);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+
+.glass-button:hover::after {
+  transform: translateX(180%) skewX(-22deg);
+}
+
 .btn-angled {
   clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
   position: relative;
@@ -121,6 +197,24 @@ body::after {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  isolation: isolate;
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -12px 20px rgba(0,0,0,0.24),
+    0 16px 26px rgba(0,0,0,0.28);
+}
+.btn-angled::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.03) 24%, transparent 56%),
+    linear-gradient(180deg, rgba(255,255,255,0.05), transparent 28%);
+  pointer-events: none;
+  clip-path: inherit;
 }
 .btn-angled::after {
   content: '';
@@ -129,11 +223,22 @@ body::after {
   left: -150%;
   width: 150%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
   transform: skewX(-20deg);
   transition: transform 0s;
+  pointer-events: none;
 }
 .btn-angled:hover::after {
   transform: skewX(-20deg) translateX(250%);
   transition: transform 0.6s ease-in-out;
+}
+
+.btn-angled:hover,
+.glass-button:hover {
+  border-color: rgba(238,63,44,0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    inset 0 -12px 20px rgba(0,0,0,0.26),
+    0 18px 34px rgba(0,0,0,0.32),
+    0 0 34px rgba(238,63,44,0.16);
 }

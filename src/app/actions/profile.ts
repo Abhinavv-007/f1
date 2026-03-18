@@ -1,42 +1,82 @@
 "use server";
 
+import type { Prediction } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+
+export type ProfilePrediction = Pick<
+  Prediction,
+  | "id"
+  | "season"
+  | "raceRound"
+  | "winner"
+  | "p2"
+  | "p3"
+  | "fastestLap"
+  | "firstRetirement"
+  | "safetyCar"
+  | "winningMargin"
+  | "pointsEarned"
+  | "accuracyScore"
+  | "submittedAt"
+>;
+
+export interface ProfileStats {
+  totalPoints: number;
+  accuracy: number;
+  globalRank: number | null;
+  predictionsCount: number;
+}
+
+export type ProfileActionResult =
+  | {
+      success: true;
+      stats: ProfileStats;
+      predictions: ProfilePrediction[];
+    }
+  | {
+      success: false;
+      error: string;
+    };
 
 export async function getUserProfile(userId: string) {
   try {
-    // 1. Fetch user data if we had it, but mostly we rely on Firebase auth user data for name/email
-    // In D1 we store predictions
-    
-    // 2. Fetch all predictions for this user
-    const predictions = await prisma.prediction.findMany({
-      where: { userId },
-      orderBy: { raceRound: 'desc' }
-    });
+    const [user, predictions] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { globalRank: true },
+      }),
+      prisma.prediction.findMany({
+        where: { userId },
+        orderBy: [{ season: "desc" }, { raceRound: "desc" }],
+      }),
+    ]);
 
-    // 3. Compute stats
-    let totalPoints = 0;
-    let accuratePredictions = 0;
-    
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    predictions.forEach((p: any) => {
-      totalPoints += p.pointsEarned || 0;
-      if (p.accuracyScore && p.accuracyScore > 80) accuratePredictions++; // Just a mock logic
-    });
-
-    const accuracy = predictions.length > 0 ? Math.round((accuratePredictions / predictions.length) * 100) : 0;
+    const totalPoints = predictions.reduce((sum, prediction) => sum + (prediction.pointsEarned ?? 0), 0);
+    const scoredPredictions = predictions.filter(
+      (prediction) => typeof prediction.accuracyScore === "number"
+    );
+    const accuracy =
+      scoredPredictions.length > 0
+        ? Math.round(
+            scoredPredictions.reduce(
+              (sum, prediction) => sum + (prediction.accuracyScore ?? 0),
+              0
+            ) / scoredPredictions.length
+          )
+        : 0;
 
     return {
       success: true,
       stats: {
         totalPoints,
         accuracy,
-        globalRank: "TBD", // Requires leaderboard logic
-        predictionsCount: predictions.length
+        globalRank: user?.globalRank ?? null,
+        predictionsCount: predictions.length,
       },
-      predictions
-    };
-  } catch (err: any) {
-    console.error("Error fetching profile:", err);
-    return { error: "Failed to load profile data." };
+      predictions,
+    } satisfies ProfileActionResult;
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    return { success: false, error: "Failed to load profile data." } satisfies ProfileActionResult;
   }
 }
