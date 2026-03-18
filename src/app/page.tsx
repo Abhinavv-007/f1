@@ -3,14 +3,18 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRaceSession } from "@/hooks/useRaceSession";
+import { getCircuitById, getRaceDistanceKm } from "@/lib/race";
+import { Gauge, MapPinned, RadioTower } from "lucide-react";
 
 export default function Home() {
   const { session, countdown, error } = useRaceSession();
+  const circuit = session?.circuitId ? getCircuitById(session.circuitId) : null;
   const seasonLabel = session
     ? `SEASON ${session.season} // ROUND ${String(session.round).padStart(2, "0")}`
     : "SEASON // LOADING";
   const locationLabel = session ? [session.city, session.country].filter(Boolean).join(" • ") : "Location loading";
   const cardLabel = session?.status === "completed" ? "Season Complete" : session?.isLocked ? "Session Locked" : "Next Race";
+  const signalLabel = error ? "Snapshot feed" : session?.source === "remote" ? "Live schedule" : "Race cache";
 
   return (
     <div className="relative w-full overflow-hidden">
@@ -70,6 +74,58 @@ export default function Home() {
                 Watch Live
                 <span className="text-white/70 group-hover:translate-x-1 transition-transform">→</span>
               </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.65 }}
+              className="mt-8 grid w-full max-w-2xl gap-4 sm:grid-cols-3"
+            >
+              <div className="rounded-2xl border border-white/10 bg-black/30 p-4 backdrop-blur-xl">
+                <div className="flex items-center gap-2 text-trgt-crimson">
+                  <MapPinned className="h-4 w-4" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">
+                    Venue
+                  </span>
+                </div>
+                <span className="mt-3 block font-display text-xl font-black uppercase tracking-tight text-white">
+                  {session?.sessionName ?? "Loading"}
+                </span>
+                <span className="mt-1 block text-xs uppercase tracking-[0.16em] text-text-secondary">
+                  {locationLabel}
+                </span>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-black/30 p-4 backdrop-blur-xl">
+                <div className="flex items-center gap-2 text-f1-yellow">
+                  <Gauge className="h-4 w-4" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">
+                    Race Deck
+                  </span>
+                </div>
+                <span className="mt-3 block font-display text-xl font-black uppercase tracking-tight text-white">
+                  {circuit ? `${getRaceDistanceKm(circuit)} km` : "TBC"}
+                </span>
+                <span className="mt-1 block text-xs uppercase tracking-[0.16em] text-text-secondary">
+                  {circuit ? `${circuit.turns} turns // ${circuit.drsZones} DRS` : "Circuit map loading"}
+                </span>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-black/30 p-4 backdrop-blur-xl">
+                <div className="flex items-center gap-2 text-white/80">
+                  <RadioTower className="h-4 w-4" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">
+                    Signal
+                  </span>
+                </div>
+                <span className="mt-3 block font-display text-xl font-black uppercase tracking-tight text-white">
+                  {signalLabel}
+                </span>
+                <span className="mt-1 block text-xs uppercase tracking-[0.16em] text-text-secondary">
+                  {cardLabel}
+                </span>
+              </div>
             </motion.div>
           </div>
 

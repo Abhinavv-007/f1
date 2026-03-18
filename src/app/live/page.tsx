@@ -2,8 +2,8 @@
 
 import { Card } from "@/components/ui/Card";
 import { useRaceSession } from "@/hooks/useRaceSession";
-import { buildCircuitInsight, getCircuitById } from "@/lib/race";
-import { Brain, Flag, MapPinned, Route, Zap } from "lucide-react";
+import { buildCircuitInsight, getCircuitById, getRaceDistanceKm } from "@/lib/race";
+import { Brain, Flag, Gauge, MapPinned, RadioTower, Route, ShieldCheck, Zap } from "lucide-react";
 
 function formatCoordinate(value: number, positiveLabel: string, negativeLabel: string) {
   const hemisphere = value >= 0 ? positiveLabel : negativeLabel;
@@ -13,20 +13,21 @@ function formatCoordinate(value: number, positiveLabel: string, negativeLabel: s
 export default function LiveDashboard() {
   const { session, error, isLoading } = useRaceSession();
   const circuit = session?.circuitId ? getCircuitById(session.circuitId) : null;
+  const hasSnapshotFallback = Boolean(session) && Boolean(error);
   const location = [circuit?.city ?? session?.city, circuit?.country ?? session?.country]
     .filter(Boolean)
     .join(", ");
   const liveStatusLabel = error
-    ? "Feed Offline"
+    ? "Weekend Snapshot"
     : isLoading
       ? "Loading Session"
       : session?.isActive
         ? "Live Session"
         : session?.status === "completed"
           ? "Weekend Complete"
-          : "Session Monitor";
+          : "Race Weekend";
   const trackStatusLabel = error
-    ? "Data Offline"
+    ? "Snapshot Mode"
     : isLoading
       ? "Syncing"
       : session?.isActive
@@ -35,16 +36,41 @@ export default function LiveDashboard() {
           ? "Parc Ferme"
           : "Awaiting Start";
   const trackStatusTone = error
-    ? "text-trgt-crimson"
+    ? "text-f1-yellow"
     : session?.isActive
       ? "text-f1-green"
       : "text-text-secondary";
+  const sourceLabel = hasSnapshotFallback
+    ? "Local race snapshot"
+    : session?.source === "remote"
+      ? "Jolpica schedule"
+      : "Season cache";
   const coordinateLabel = circuit
     ? `${formatCoordinate(circuit.lat, "N", "S")} // ${formatCoordinate(circuit.lng, "E", "W")}`
     : "Coordinate sync pending";
-  const telemetryLabel = circuit ? "Circuit geometry locked" : "Waiting for circuit data";
-  const lapSummary = circuit ? `Lap 0 / ${circuit.laps}` : "Lap count syncing";
+  const telemetryLabel = circuit
+    ? hasSnapshotFallback
+      ? "Fallback circuit map loaded"
+      : "Circuit geometry locked"
+    : "Waiting for circuit data";
+  const lapSummary = session?.isActive
+    ? `Lap 0 / ${circuit?.laps ?? "--"}`
+    : circuit
+      ? `${circuit.laps} race laps`
+      : "Lap count syncing";
   const insight = circuit ? buildCircuitInsight(circuit) : "Circuit telemetry will appear once the current session feed resolves.";
+  const raceDistance = circuit ? `${getRaceDistanceKm(circuit)} km` : "--";
+  const sessionWindow = session?.startsAt
+    ? new Intl.DateTimeFormat(undefined, {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      }).format(new Date(session.startsAt))
+    : "Window pending";
+  const opsModeLabel = session?.isActive ? "Live telemetry" : hasSnapshotFallback ? "Snapshot briefing" : "Pre-race monitoring";
+  const statusDotClass = hasSnapshotFallback ? "bg-f1-yellow" : "bg-trgt-crimson";
+  const statusPingClass = hasSnapshotFallback ? "bg-f1-yellow" : "bg-trgt-crimson";
 
   return (
     <div className="flex flex-col w-full min-h-screen pt-4 pb-24 px-6 lg:px-12">
@@ -57,10 +83,12 @@ export default function LiveDashboard() {
           <div className="flex items-center gap-4 mt-2">
             <div className="flex items-center gap-2">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-trgt-crimson opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-trgt-crimson" />
+                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${statusPingClass}`} />
+                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${statusDotClass}`} />
               </span>
-              <span className="text-xs uppercase font-bold tracking-widest text-trgt-crimson">{liveStatusLabel}</span>
+              <span className={`text-xs uppercase font-bold tracking-widest ${hasSnapshotFallback ? "text-f1-yellow" : "text-trgt-crimson"}`}>
+                {liveStatusLabel}
+              </span>
             </div>
             <span className="text-border-subtle">|</span>
             <span className="font-mono text-sm text-text-secondary">{lapSummary}</span>
@@ -84,6 +112,18 @@ export default function LiveDashboard() {
         
         {/* Timing Tower (Left 8 cols) */}
         <div className="lg:col-span-8 flex flex-col gap-4">
+          <div className="flex items-center justify-between px-2">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-text-muted">Timing Deck</span>
+              <span className="mt-1 text-sm font-medium uppercase tracking-[0.16em] text-text-secondary">
+                {hasSnapshotFallback ? "Reference grid while the live worker feed recovers" : "Race order preview with circuit-linked session context"}
+              </span>
+            </div>
+            <span className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white/70">
+              {sourceLabel}
+            </span>
+          </div>
+
           <div className="flex items-center justify-between pb-2 border-b border-border-subtle/50 px-2 text-xs uppercase font-bold text-text-muted tracking-widest">
             <div className="flex items-center gap-6 w-[40px]">POS</div>
             <div className="flex-1 min-w-[120px]">Driver</div>
@@ -199,6 +239,63 @@ export default function LiveDashboard() {
                </div>
                <div className="w-[60px] text-right font-mono text-sm text-text-muted hidden sm:block">1</div>
              </div>
+          </Card>
+
+          <Card glass className="overflow-hidden border-border-strong bg-black/40">
+            <div className="flex items-center justify-between border-b border-border-subtle/40 px-5 py-4">
+              <div>
+                <span className="block text-[10px] font-bold uppercase tracking-[0.22em] text-text-muted">
+                  Race Ops
+                </span>
+                <span className="mt-1 block text-sm uppercase tracking-[0.16em] text-white/80">
+                  Session intelligence for the current round
+                </span>
+              </div>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white/70">
+                {opsModeLabel}
+              </span>
+            </div>
+
+            <div className="grid gap-4 p-5 xl:grid-cols-[1.2fr_0.8fr]">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                <div className="flex items-center gap-2 text-trgt-crimson">
+                  <RadioTower className="h-4 w-4" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">Signal Brief</span>
+                </div>
+                <p className="mt-4 text-sm leading-relaxed text-text-secondary">
+                  {hasSnapshotFallback
+                    ? `The Cloudflare worker is serving the local race snapshot for ${session?.sessionName ?? "this weekend"}, so the page stays populated with the current circuit, countdown, and race window instead of dropping into an error state.`
+                    : session?.isActive
+                      ? `${session?.sessionName ?? "Current session"} is inside the active monitoring window. Use this board as the fast-glance circuit and strategy panel while live services are connected.`
+                      : `${session?.sessionName ?? "This round"} is in pre-race mode. The board is tracking the schedule window, lock state, and circuit references ahead of lights out.`}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-white/10 bg-black/35 p-4">
+                  <span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-text-muted">Race Distance</span>
+                  <span className="mt-2 block font-mono text-lg text-white">{raceDistance}</span>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/35 p-4">
+                  <span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-text-muted">Session Window</span>
+                  <span className="mt-2 block font-mono text-sm text-white">{sessionWindow}</span>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/35 p-4">
+                  <span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-text-muted">Prediction Lock</span>
+                  <span className="mt-2 flex items-center gap-2 font-mono text-sm text-white">
+                    <ShieldCheck className="h-4 w-4 text-trgt-crimson" />
+                    {session?.isLocked ? "Closed" : "Open"}
+                  </span>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/35 p-4">
+                  <span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-text-muted">Ops Mode</span>
+                  <span className="mt-2 flex items-center gap-2 font-mono text-sm text-white">
+                    <Gauge className="h-4 w-4 text-f1-yellow" />
+                    {opsModeLabel}
+                  </span>
+                </div>
+              </div>
+            </div>
           </Card>
         </div>
 

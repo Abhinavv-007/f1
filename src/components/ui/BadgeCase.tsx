@@ -1,6 +1,6 @@
 "use client";
 
-import { type BadgeState } from "@/lib/badges";
+import { buildBadgeStates, type BadgeState } from "@/lib/badges";
 import { cn } from "@/lib/utils";
 import { Lock, Sparkles } from "lucide-react";
 
@@ -10,7 +10,19 @@ interface BadgeCaseProps {
 }
 
 export function BadgeCase({ badges, className }: BadgeCaseProps) {
-  const unlockedCount = badges.filter((badge) => badge.unlocked).length;
+  const badgeList =
+    badges.length > 0
+      ? badges
+      : buildBadgeStates(
+          {
+            accountCreatedAt: null,
+            predictionsCount: 0,
+            totalPoints: 0,
+            accuracy: 0,
+          },
+          []
+        );
+  const unlockedCount = badgeList.filter((badge) => badge.unlocked).length;
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
@@ -20,7 +32,7 @@ export function BadgeCase({ badges, className }: BadgeCaseProps) {
             Garage Inventory
           </span>
           <span className="mt-1 block font-display text-xl font-black uppercase tracking-tight text-white">
-            {unlockedCount} / {badges.length} unlocked
+            {unlockedCount} / {badgeList.length} unlocked
           </span>
         </div>
         <div className="flex h-11 w-11 items-center justify-center rounded-full border border-f1-yellow/30 bg-f1-yellow/10 text-f1-yellow">
@@ -29,7 +41,7 @@ export function BadgeCase({ badges, className }: BadgeCaseProps) {
       </div>
 
       <div className="grid grid-cols-1 gap-3">
-        {badges.map((badge) => (
+        {badgeList.map((badge) => (
           <div
             key={badge.id}
             className={cn(
