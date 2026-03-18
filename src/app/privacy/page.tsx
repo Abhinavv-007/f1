@@ -1,53 +1,42 @@
-import Link from "next/link";
+import { LegalPageShell } from "@/components/legal/LegalPageShell";
 
 const sections = [
   {
     title: "What TRGT Stores",
     body:
-      "TRGT stores the minimum account and prediction data needed to let you sign in, lock race picks, track points, and unlock badges across the season.",
+      "TRGT stores the minimum account, sign-in, badge, and prediction data needed to let you enter the product, lock race picks, track points, and keep your season history consistent.",
   },
   {
     title: "What TRGT Uses",
     body:
-      "Session, standings, and circuit surfaces are powered by external motorsport data feeds and local snapshots. Those feeds are used to keep race information timely and visible across the app.",
+      "Session, standings, and circuit surfaces are powered by external motorsport data feeds together with local fallback snapshots. Those feeds are used to keep race information timely and visible throughout the product.",
   },
   {
     title: "Your Control",
     body:
-      "If you stop using the app, your account remains limited to the stored profile and prediction history needed for leaderboard continuity. No ad-tech or third-party tracking layer is added in the product UI.",
+      "If you stop using TRGT, the retained data is limited to the profile and prediction history needed for account continuity and rankings. The product UI is not built around ad-tech or noisy tracking layers.",
+  },
+  {
+    title: "Authentication",
+    body:
+      "When you sign in, TRGT uses the authentication details needed to identify your account and connect predictions, badges, and profile state to the right user.",
+  },
+  {
+    title: "Operational Logging",
+    body:
+      "Basic platform logs may exist for uptime, debugging, or API reliability, especially when upstream race feeds fail and the app needs to recover into cached or local snapshot mode.",
   },
 ];
 
 export default function PrivacyPage() {
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 pb-24 pt-8 md:px-12">
-      <div className="glass rounded-3xl border border-border-strong p-8 md:p-12">
-        <span className="text-xs font-bold uppercase tracking-[0.22em] text-trgt-crimson">Policy</span>
-        <h1 className="mt-4 font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">
-          Privacy Policy
-        </h1>
-        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-text-secondary md:text-lg">
-          TRGT is built to keep the product lean: race data, predictions, badges, and profile continuity without unnecessary noise.
-        </p>
-
-        <div className="mt-10 grid gap-4">
-          {sections.map((section) => (
-            <div key={section.title} className="rounded-2xl border border-white/10 bg-black/25 p-5">
-              <h2 className="text-lg font-black uppercase tracking-[0.08em] text-white">{section.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-text-secondary">{section.body}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10">
-          <Link
-            href="/"
-            className="glass-button inline-flex h-11 items-center justify-center rounded-full px-5 text-xs font-display uppercase tracking-[0.16em] text-white transition-colors"
-          >
-            Return To Garage
-          </Link>
-        </div>
-      </div>
-    </div>
+    <LegalPageShell
+      eyebrow="Policy"
+      title="Privacy Policy"
+      intro="TRGT keeps the data model lean: account continuity, prediction state, badge progress, and the live race surfaces needed to run the experience without loading the product with irrelevant tracking."
+      summaryTitle="Minimal by design"
+      summaryBody="The product is built to store what it needs to operate the race experience and little else: identity, predictions, scoring state, and the data required to keep your season history coherent."
+      sections={sections}
+    />
   );
 }
