@@ -15,6 +15,8 @@ export default function Home() {
   const locationLabel = session ? [session.city, session.country].filter(Boolean).join(" • ") : "Location loading";
   const cardLabel = session?.status === "completed" ? "Season Complete" : session?.isLocked ? "Session Locked" : "Next Race";
   const signalLabel = error ? "Snapshot feed" : session?.source === "remote" ? "Live schedule" : "Race cache";
+  const featureIndexClassName =
+    "pointer-events-none absolute -top-8 -left-4 select-none font-mono text-6xl font-black tracking-[-0.06em] text-[rgba(238,63,44,0.3)] drop-shadow-[0_0_18px_rgba(238,63,44,0.18)] transition-all duration-500 group-hover:scale-110 group-hover:text-[rgba(255,122,96,0.52)] md:-top-10 md:-left-6 md:text-8xl";
 
   return (
     <div className="relative w-full overflow-hidden">
@@ -198,7 +200,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
             <div className="relative group">
-              <span className="font-mono text-6xl md:text-8xl font-black text-trgt-crimson/10 absolute -top-8 -left-4 md:-top-10 md:-left-6 pointer-events-none transition-transform group-hover:scale-110 duration-500">
+              <span className={featureIndexClassName}>
                 01
               </span>
               <div className="relative pt-8">
@@ -212,7 +214,7 @@ export default function Home() {
             </div>
 
             <div className="relative group">
-              <span className="font-mono text-6xl md:text-8xl font-black text-trgt-crimson/10 absolute -top-8 -left-4 md:-top-10 md:-left-6 pointer-events-none transition-transform group-hover:scale-110 duration-500">
+              <span className={featureIndexClassName}>
                 02
               </span>
               <div className="relative pt-8">
@@ -226,7 +228,7 @@ export default function Home() {
             </div>
 
             <div className="relative group">
-              <span className="font-mono text-6xl md:text-8xl font-black text-trgt-crimson/10 absolute -top-8 -left-4 md:-top-10 md:-left-6 pointer-events-none transition-transform group-hover:scale-110 duration-500">
+              <span className={featureIndexClassName}>
                 03
               </span>
               <div className="relative pt-8">

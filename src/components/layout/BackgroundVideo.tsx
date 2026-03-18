@@ -55,9 +55,38 @@ export function BackgroundVideo() {
       window.sessionStorage.setItem(STORAGE_KEY, String(video.currentTime));
     };
 
+    const ensurePlayback = () => {
+      if (document.hidden) {
+        return;
+      }
+
+      if (video.ended) {
+        video.currentTime = 0;
+      }
+
+      if (video.paused) {
+        void video.play().catch(() => undefined);
+      }
+    };
+
     const resumePlayback = () => {
       restorePlaybackPosition();
-      void video.play().catch(() => undefined);
+      ensurePlayback();
+    };
+
+    const handlePause = () => {
+      persistPlaybackPosition();
+
+      window.setTimeout(() => {
+        ensurePlayback();
+      }, 120);
+    };
+
+    const handleEnded = () => {
+      window.sessionStorage.setItem(STORAGE_KEY, "0");
+      lastSavedSecondRef.current = 0;
+      video.currentTime = 0;
+      ensurePlayback();
     };
 
     const handleVisibilityChange = () => {
@@ -69,18 +98,30 @@ export function BackgroundVideo() {
     };
 
     restorePlaybackPosition();
-    void video.play().catch(() => undefined);
+    ensurePlayback();
 
     video.addEventListener("loadedmetadata", restorePlaybackPosition);
+    video.addEventListener("canplay", ensurePlayback);
     video.addEventListener("timeupdate", persistPlaybackPosition);
+    video.addEventListener("pause", handlePause);
+    video.addEventListener("ended", handleEnded);
+    video.addEventListener("stalled", ensurePlayback);
     window.addEventListener("pagehide", persistPlaybackPosition);
+    window.addEventListener("pageshow", resumePlayback);
+    window.addEventListener("focus", ensurePlayback);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       persistPlaybackPosition();
       video.removeEventListener("loadedmetadata", restorePlaybackPosition);
+      video.removeEventListener("canplay", ensurePlayback);
       video.removeEventListener("timeupdate", persistPlaybackPosition);
+      video.removeEventListener("pause", handlePause);
+      video.removeEventListener("ended", handleEnded);
+      video.removeEventListener("stalled", ensurePlayback);
       window.removeEventListener("pagehide", persistPlaybackPosition);
+      window.removeEventListener("pageshow", resumePlayback);
+      window.removeEventListener("focus", ensurePlayback);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);

@@ -22,7 +22,7 @@ export function Navbar() {
   const { user, loading } = useAuth();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/[0.38] backdrop-blur-3xl">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/8 bg-black/[0.44] shadow-[0_18px_40px_rgba(0,0,0,0.22)] backdrop-blur-3xl">
       <div className="max-w-[1600px] mx-auto px-4 py-4 md:px-12 flex flex-col gap-4 md:grid md:grid-cols-[auto_1fr_auto] md:items-center">
         <div className="flex items-center justify-between gap-4 md:justify-start">
           <Link href="/" className="flex items-center gap-3 group">
@@ -117,6 +117,10 @@ export function Navbar() {
           </Link>
         </div>
       </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-[-36px] h-10 bg-gradient-to-b from-black/[0.36] via-black/[0.16] to-transparent"
+      />
     </header>
   );
 }
