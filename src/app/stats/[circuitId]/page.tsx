@@ -9,11 +9,16 @@ import {
   getCircuitById,
   getRaceByCircuitId,
   getRaceDistanceKm,
+  getSeasonRaces,
   getTrackScaleLabel,
 } from "@/lib/race";
 import { formatCountryFlag } from "@/lib/utils";
 
-export const runtime = "edge";
+export function generateStaticParams() {
+  return getSeasonRaces().map((race) => ({
+    circuitId: race.circuit,
+  }));
+}
 
 function renderScale(value: number, colorClass: string) {
   return (

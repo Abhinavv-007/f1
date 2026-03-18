@@ -3,12 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { auth } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
-import { Github } from "lucide-react";
 
 const navLinks = [
   { name: "Live", href: "/live" },
@@ -19,14 +17,12 @@ const navLinks = [
   { name: "Profile", href: "/profile" },
 ];
 
-const repoHref = "https://github.com/Abhinavv-007/f1";
-
 export function Navbar() {
   const pathname = usePathname();
   const { user, loading } = useAuth();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border-subtle bg-black/55 backdrop-blur-2xl">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/55 backdrop-blur-2xl">
       <div className="max-w-[1600px] mx-auto px-4 py-4 md:px-12 flex flex-col gap-4 md:grid md:grid-cols-[auto_1fr_auto] md:items-center">
         <div className="flex items-center justify-between gap-4 md:justify-start">
           <Link href="/" className="flex items-center gap-3 group">
@@ -43,14 +39,6 @@ export function Navbar() {
           </Link>
 
           <div className="flex items-center gap-2 md:hidden">
-            <Link
-              href={repoHref}
-              target="_blank"
-              rel="noreferrer"
-              className="glass-button inline-flex h-10 w-10 items-center justify-center rounded-full text-text-secondary transition-colors hover:text-white"
-            >
-              <Github className="w-4 h-4" />
-            </Link>
             {user ? (
               <Link href="/profile" className="w-10 h-10 rounded-full overflow-hidden border border-border-strong hover:border-trgt-crimson transition-colors">
                 <Image
@@ -70,7 +58,7 @@ export function Navbar() {
         </div>
 
         <nav aria-label="Primary navigation" className="overflow-x-auto md:overflow-visible">
-          <div className="glass flex min-w-max items-center gap-1 rounded-full p-1 md:mx-auto md:w-fit">
+          <div className="flex min-w-max items-center gap-2 md:mx-auto md:w-fit">
             {navLinks.map((link) => {
               const isActive = pathname.startsWith(link.href);
               return (
@@ -78,18 +66,13 @@ export function Navbar() {
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "relative px-4 py-2.5 text-xs md:text-sm font-medium transition-colors rounded-full uppercase tracking-[0.18em]",
-                    isActive ? "text-white" : "text-text-secondary hover:text-white"
+                    "glass-button inline-flex items-center justify-center rounded-full border px-4 py-2.5 text-xs font-medium uppercase tracking-[0.18em] transition-colors md:text-sm",
+                    isActive
+                      ? "border-white/15 bg-surface-hover text-white"
+                      : "border-border-strong/70 text-text-secondary hover:text-white"
                   )}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="navbar-indicator"
-                      className="absolute inset-0 rounded-full bg-surface-hover"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative z-10">{link.name}</span>
+                  {link.name}
                 </Link>
               );
             })}
@@ -97,16 +80,6 @@ export function Navbar() {
         </nav>
 
         <div className="hidden md:flex items-center gap-3 justify-self-end">
-          <Link
-            href={repoHref}
-            target="_blank"
-            rel="noreferrer"
-            className="glass-button inline-flex h-10 items-center gap-2 rounded-full px-4 text-xs font-display uppercase tracking-[0.18em] text-white transition-colors"
-          >
-            <Github className="w-4 h-4 text-trgt-crimson" />
-            Repo
-          </Link>
-
           {loading ? (
             <div className="w-12 h-6 animate-pulse bg-surface-hover rounded" />
           ) : user ? (

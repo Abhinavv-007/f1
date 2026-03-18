@@ -29,24 +29,53 @@ interface ConstructorStanding {
   wins: number;
 }
 
+interface StandingsPayload {
+  season: number;
+  round: number;
+  drivers: DriverStanding[];
+  constructors: ConstructorStanding[];
+  source: "live" | "cache" | "snapshot";
+  updatedAt: string;
+  stale?: boolean;
+  error?: string;
+}
+
 export default function StandingsPage() {
   const [activeTab, setActiveTab] = useState<StandingTab>("drivers");
   const [loading, setLoading] = useState(true);
   const [drivers, setDrivers] = useState<DriverStanding[]>([]);
   const [constructors, setConstructors] = useState<ConstructorStanding[]>([]);
+  const [meta, setMeta] = useState<Pick<StandingsPayload, "season" | "round" | "source" | "stale" | "error"> | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/standings")
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.drivers) {
-          setDrivers(data.drivers);
-          setConstructors(data.constructors);
+    fetch("/api/standings", { cache: "no-store" })
+      .then(async (res) => {
+        const data = (await res.json()) as StandingsPayload;
+
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to load standings");
         }
+
+        setDrivers(data.drivers ?? []);
+        setConstructors(data.constructors ?? []);
+        setMeta({
+          season: data.season,
+          round: data.round,
+          source: data.source,
+          stale: data.stale,
+          error: data.error,
+        });
+
+        if (!data.drivers?.length || !data.constructors?.length) {
+          setError("Standings are temporarily unavailable.");
+        }
+
         setLoading(false);
       })
       .catch((err) => {
         console.error("Failed to load standings", err);
+        setError(err instanceof Error ? err.message : "Failed to load standings");
         setLoading(false);
       });
   }, []);
@@ -76,6 +105,13 @@ export default function StandingsPage() {
      );
   }
 
+  const sourceLabel =
+    meta?.source === "live"
+      ? "Live Jolpica feed"
+      : meta?.source === "cache"
+        ? "Cached live feed"
+        : "Bundled fallback snapshot";
+
   return (
     <div className="flex flex-col w-full min-h-screen pt-4 pb-24 px-6 lg:px-12 max-w-[1400px] mx-auto overflow-hidden">
       {/* Top Banner and Tabs */}
@@ -90,7 +126,7 @@ export default function StandingsPage() {
           </h1>
           <p className="text-text-secondary text-sm uppercase tracking-widest flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-f1-green animate-pulse" />
-            Live Global Standings
+            {meta ? `${sourceLabel} // ${meta.season} Round ${String(meta.round).padStart(2, "0")}` : "Live Global Standings"}
           </p>
         </motion.div>
 
@@ -146,6 +182,18 @@ export default function StandingsPage() {
          <div className="w-[120px] hidden md:block text-center mr-4">Wins</div>
          <div className="w-[80px] text-right">Points</div>
       </motion.div>
+
+      {(error || meta?.error) && (
+        <Card glass className="mb-6 border-border-strong bg-black/35 px-6 py-4 text-sm text-text-secondary">
+          {error || meta?.error}
+        </Card>
+      )}
+
+      {!drivers.length && !constructors.length && (
+        <Card glass className="border-border-strong bg-black/35 px-6 py-8 text-center text-text-secondary">
+          Standings did not load. The live feed is reachable, so this is likely a temporary runtime fetch issue on the deployed worker.
+        </Card>
+      )}
 
       {/* Main List */}
       <AnimatePresence mode="wait">
