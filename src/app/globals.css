@@ -190,6 +190,42 @@ body::after {
   transform: translateX(180%) skewX(-22deg);
 }
 
+.topbar-button {
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease,
+    transform 220ms ease;
+}
+
+.topbar-button:hover {
+  color: #fff;
+  border-color: rgba(255, 92, 72, 0.58);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.03) 16%, rgba(16,0,0,0.58) 100%),
+    linear-gradient(135deg, rgba(255,84,60,0.78), rgba(238,63,44,0.34) 42%, rgba(15,0,0,0.78) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    inset 0 -16px 20px rgba(32,0,0,0.28),
+    0 18px 34px rgba(0,0,0,0.34),
+    0 0 34px rgba(238,63,44,0.28);
+  transform: translateY(-1px);
+}
+
+.topbar-button-active {
+  color: #fff;
+  border-color: rgba(255, 116, 92, 0.52);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04) 16%, rgba(16,0,0,0.48) 100%),
+    linear-gradient(135deg, rgba(255,102,78,0.78), rgba(238,63,44,0.34) 44%, rgba(0,0,0,0.7) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    inset 0 -14px 18px rgba(28,0,0,0.24),
+    0 16px 28px rgba(0,0,0,0.28),
+    0 0 30px rgba(238,63,44,0.22);
+}
+
 .btn-angled {
   clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
   position: relative;

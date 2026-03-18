@@ -50,7 +50,7 @@ export function Navbar() {
                 />
               </Link>
             ) : (
-              <Link href="/login" className="glass-button inline-flex h-10 items-center justify-center rounded-full px-4 text-xs font-display uppercase tracking-[0.18em] text-white transition-colors">
+              <Link href="/login" className="glass-button topbar-button inline-flex h-10 items-center justify-center rounded-full px-4 text-xs font-display uppercase tracking-[0.18em] text-white transition-colors">
                 Sign In
               </Link>
             )}
@@ -66,9 +66,9 @@ export function Navbar() {
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "glass-button inline-flex items-center justify-center rounded-full border px-4 py-2.5 text-xs font-medium uppercase tracking-[0.18em] transition-colors md:text-sm",
+                    "glass-button topbar-button inline-flex items-center justify-center rounded-full border px-4 py-2.5 text-xs font-medium uppercase tracking-[0.18em] transition-colors md:text-sm",
                     isActive
-                      ? "border-white/15 bg-surface-hover text-white"
+                      ? "topbar-button-active"
                       : "border-border-strong/70 text-text-secondary hover:text-white"
                   )}
                 >
@@ -103,7 +103,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="glass-button inline-flex h-9 items-center justify-center rounded-sm px-4 text-xs font-display uppercase tracking-widest text-white transition-colors"
+              className="glass-button topbar-button inline-flex h-9 items-center justify-center rounded-sm px-4 text-xs font-display uppercase tracking-widest text-white transition-colors"
             >
               Sign In
             </Link>
@@ -111,7 +111,7 @@ export function Navbar() {
 
           <Link
             href="/predict"
-            className="glass-button inline-flex h-9 items-center justify-center rounded-sm bg-[linear-gradient(135deg,rgba(238,63,44,0.68),rgba(238,63,44,0.28)_42%,rgba(0,0,0,0.54)_100%)] px-4 text-xs font-display uppercase tracking-widest text-white transition-colors"
+            className="glass-button topbar-button topbar-button-active inline-flex h-9 items-center justify-center rounded-sm bg-[linear-gradient(135deg,rgba(238,63,44,0.68),rgba(238,63,44,0.28)_42%,rgba(0,0,0,0.54)_100%)] px-4 text-xs font-display uppercase tracking-widest text-white transition-colors"
           >
             Lock Prediction
           </Link>

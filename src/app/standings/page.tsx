@@ -173,14 +173,14 @@ export default function StandingsPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="flex items-center justify-between py-3 px-8 text-[10px] uppercase font-bold text-text-muted tracking-widest mb-4 mx-2"
+        className="mb-4 mx-2 hidden grid-cols-[60px_minmax(0,1fr)_120px_80px] items-center gap-5 px-8 py-3 text-[10px] font-bold uppercase tracking-widest text-text-muted md:grid"
       >
-         <div className="w-[60px]">POS</div>
-         <div className="flex-1 min-w-[120px]">
+         <div>POS</div>
+         <div>
            {activeTab === "drivers" ? "Driver" : "Constructor"}
          </div>
-         <div className="w-[120px] hidden md:block text-center mr-4">Wins</div>
-         <div className="w-[80px] text-right">Points</div>
+         <div className="text-center">Wins</div>
+         <div className="text-right">Points</div>
       </motion.div>
 
       {(error || meta?.error) && (
@@ -241,25 +241,41 @@ export default function StandingsPage() {
 
               return (
                 <motion.div key={d.code} variants={item}>
-                  <Card glass className="flex items-center justify-between py-5 px-8 border-border-strong bg-surface-deep/60 hover:bg-surface-hover/60 transition-colors relative overflow-hidden group border-l-4" style={{ borderLeftColor: d.teamColor }}>
-                      <div className="w-[60px] font-display text-white text-3xl font-black flex items-center gap-2 opacity-80">
-                        {d.position} 
+                  <Card glass className="border-border-strong bg-surface-deep/60 transition-colors relative overflow-hidden group border-l-4" style={{ borderLeftColor: d.teamColor }}>
+                    <div className="grid gap-4 px-8 py-5 md:grid-cols-[60px_minmax(0,1fr)_120px_80px] md:items-center md:gap-5">
+                      <div className="font-display text-3xl font-black text-white opacity-80">
+                        {d.position}
                       </div>
-                      <div className="flex-1 min-w-[120px] flex items-center gap-5 relative z-10">
-                        <div className="w-12 h-12 rounded-full bg-surface-deep border-2 flex items-center justify-center font-display font-bold text-white uppercase text-sm transition-shadow" style={{ borderColor: d.teamColor }}>
+                      <div className="relative z-10 flex min-w-0 items-center gap-5">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 bg-surface-deep font-display text-sm font-bold uppercase text-white transition-shadow" style={{ borderColor: d.teamColor }}>
                           {d.code}
                         </div>
-                        <div className="flex flex-col">
-                            <span className="font-display font-black text-white text-2xl uppercase tracking-tight transition-colors">{d.firstName} {d.lastName}</span>
-                            <span className="text-[10px] text-text-secondary uppercase tracking-widest mt-0.5">{d.team} {d.nationality}</span>
+                        <div className="flex min-w-0 flex-col">
+                          <span className="truncate font-display text-2xl font-black uppercase tracking-tight text-white transition-colors">
+                            {d.firstName} {d.lastName}
+                          </span>
+                          <span className="mt-0.5 text-[10px] uppercase tracking-widest text-text-secondary">
+                            {d.team} {d.nationality}
+                          </span>
                         </div>
                       </div>
-                      <div className="w-[120px] hidden md:flex items-center justify-center gap-1.5 opacity-80">
-                         <span className="font-mono text-sm text-text-muted">{d.wins}</span>
+                      <div className="hidden items-center justify-center opacity-80 md:flex">
+                        <span className="font-mono text-sm text-text-muted">{d.wins}</span>
                       </div>
-                      <div className="w-[80px] text-right font-mono text-3xl font-black text-white tracking-tighter">
+                      <div className="hidden text-right font-mono text-3xl font-black tracking-tighter text-white md:block">
                         {d.points}
                       </div>
+                      <div className="flex items-center gap-6 border-t border-white/5 pt-4 md:hidden">
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-text-muted">Wins</span>
+                          <span className="font-mono text-lg font-bold text-white">{d.wins}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-text-muted">Points</span>
+                          <span className="font-mono text-2xl font-black text-white">{d.points}</span>
+                        </div>
+                      </div>
+                    </div>
                   </Card>
                 </motion.div>
               );
@@ -307,21 +323,33 @@ export default function StandingsPage() {
 
               return (
                 <motion.div key={c.id} variants={item}>
-                  <Card glass className="flex items-center justify-between py-6 px-10 border-border-strong bg-surface-deep/60 hover:bg-surface-hover/60 transition-all duration-300 relative overflow-hidden group border-l-4" style={{ borderLeftColor: c.color }}>
-                      <div className="w-[80px] font-display text-white text-4xl font-black flex items-center gap-3 opacity-80">
+                  <Card glass className="border-border-strong bg-surface-deep/60 transition-all duration-300 relative overflow-hidden group border-l-4" style={{ borderLeftColor: c.color }}>
+                    <div className="grid gap-4 px-10 py-6 md:grid-cols-[80px_minmax(0,1fr)_120px_100px] md:items-center md:gap-6">
+                      <div className="font-display text-4xl font-black text-white opacity-80">
                         {c.position}
                       </div>
-                      <div className="flex-1 min-w-[120px] flex items-center gap-6 relative z-10 pl-4 border-l border-white/5">
-                        <div className="flex flex-col">
-                            <span className="font-display font-black text-white text-3xl uppercase tracking-tighter transition-colors">{c.name}</span>
-                        </div>
+                      <div className="relative z-10 min-w-0 border-white/5 md:border-l md:pl-4">
+                        <span className="block truncate font-display text-3xl font-black uppercase tracking-tighter text-white transition-colors">
+                          {c.name}
+                        </span>
                       </div>
-                      <div className="w-[120px] hidden md:flex items-center justify-center gap-1.5 opacity-80">
+                      <div className="hidden items-center justify-center opacity-80 md:flex">
                         <span className="font-mono text-sm text-text-muted">{c.wins}</span>
                       </div>
-                      <div className="w-[100px] text-right font-mono text-4xl font-black text-white tracking-tighter opacity-90">
+                      <div className="hidden text-right font-mono text-4xl font-black tracking-tighter text-white opacity-90 md:block">
                         {c.points}
                       </div>
+                      <div className="flex items-center gap-6 border-t border-white/5 pt-4 md:hidden">
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-text-muted">Wins</span>
+                          <span className="font-mono text-lg font-bold text-white">{c.wins}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-text-muted">Points</span>
+                          <span className="font-mono text-2xl font-black text-white">{c.points}</span>
+                        </div>
+                      </div>
+                    </div>
                   </Card>
                 </motion.div>
               );
