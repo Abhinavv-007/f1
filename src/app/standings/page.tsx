@@ -166,18 +166,21 @@ export default function StandingsPage() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="flex p-1.5 bg-black/40 backdrop-blur rounded-xl border border-border-strong w-full md:w-auto shadow-2xl relative z-20"
+          className="relative z-20 flex w-full rounded-xl border border-border-strong bg-black/[0.28] p-1.5 shadow-2xl backdrop-blur-2xl md:w-auto"
         >
            <button
              onClick={() => setActiveTab("drivers")}
              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-lg uppercase text-xs font-bold tracking-widest transition-all duration-300 relative ${
                activeTab === "drivers" 
-                 ? "text-black shadow-lg" 
-                 : "text-text-secondary hover:text-white hover:bg-surface-hover"
+                 ? "text-white shadow-lg" 
+                 : "text-text-secondary hover:text-white hover:bg-white/[0.06]"
              }`}
            >
              {activeTab === "drivers" && (
-               <motion.div layoutId="activeTab" className="absolute inset-0 bg-white rounded-lg -z-10" />
+               <motion.div
+                 layoutId="activeTab"
+                 className="absolute inset-0 -z-10 rounded-lg border border-white/14 bg-[linear-gradient(135deg,rgba(255,255,255,0.16),rgba(255,255,255,0.05)_34%,rgba(238,63,44,0.18)_100%)] backdrop-blur-xl"
+               />
              )}
              <Trophy className="w-4 h-4" />
              Drivers
@@ -186,12 +189,15 @@ export default function StandingsPage() {
              onClick={() => setActiveTab("constructors")}
              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 rounded-lg uppercase text-xs font-bold tracking-widest transition-all duration-300 relative ${
                activeTab === "constructors" 
-                 ? "text-black shadow-lg" 
-                 : "text-text-secondary hover:text-white hover:bg-surface-hover"
+                 ? "text-white shadow-lg" 
+                 : "text-text-secondary hover:text-white hover:bg-white/[0.06]"
              }`}
            >
              {activeTab === "constructors" && (
-               <motion.div layoutId="activeTab" className="absolute inset-0 bg-white rounded-lg -z-10" />
+               <motion.div
+                 layoutId="activeTab"
+                 className="absolute inset-0 -z-10 rounded-lg border border-white/14 bg-[linear-gradient(135deg,rgba(255,255,255,0.16),rgba(255,255,255,0.05)_34%,rgba(238,63,44,0.18)_100%)] backdrop-blur-xl"
+               />
              )}
              <Shield className="w-4 h-4" />
              Constructors

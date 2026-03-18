@@ -22,7 +22,7 @@ export function Navbar() {
   const { user, loading } = useAuth();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/55 backdrop-blur-2xl">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/[0.38] backdrop-blur-3xl">
       <div className="max-w-[1600px] mx-auto px-4 py-4 md:px-12 flex flex-col gap-4 md:grid md:grid-cols-[auto_1fr_auto] md:items-center">
         <div className="flex items-center justify-between gap-4 md:justify-start">
           <Link href="/" className="flex items-center gap-3 group">
@@ -95,7 +95,7 @@ export function Navbar() {
               </Link>
               <button
                 onClick={() => auth && signOut(auth)}
-                className="text-[10px] text-text-muted hover:text-white uppercase tracking-widest font-bold"
+                className="glass-button topbar-button inline-flex h-9 items-center justify-center rounded-full px-4 text-[10px] font-display uppercase tracking-[0.2em] text-white transition-colors"
               >
                 Out
               </button>

@@ -56,7 +56,10 @@ export function ShareCard({ prediction, onClose }: ShareCardProps) {
       <div className="relative flex flex-col items-center gap-4 max-w-sm w-full">
         {/* Close Button */}
         {onClose && (
-          <button onClick={onClose} className="absolute -top-4 -right-4 z-10 w-8 h-8 rounded-full bg-surface-deep border border-border-strong flex items-center justify-center hover:border-white transition-colors">
+          <button
+            onClick={onClose}
+            className="glass-button absolute -top-4 -right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full text-white transition-colors"
+          >
             <X className="w-4 h-4 text-white" />
           </button>
         )}
@@ -140,7 +143,7 @@ export function ShareCard({ prediction, onClose }: ShareCardProps) {
           <button
             onClick={handleDownload}
             disabled={isCapturing}
-            className="flex-1 h-12 rounded bg-trgt-crimson text-white font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 hover:bg-trgt-crimson/80 transition-colors disabled:opacity-50"
+            className="glass-button topbar-button topbar-button-active flex h-12 flex-1 items-center justify-center gap-2 rounded-xl px-4 text-sm font-bold uppercase tracking-widest text-white transition-colors disabled:opacity-50"
           >
             {isCapturing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             {isCapturing ? "Capturing..." : "Save Image"}
@@ -154,7 +157,7 @@ export function ShareCard({ prediction, onClose }: ShareCardProps) {
                 navigator.clipboard.writeText(text);
               }
             }}
-            className="h-12 px-6 rounded bg-surface-deep border border-border-strong text-white font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 hover:border-white/50 transition-colors"
+            className="glass-button inline-flex h-12 items-center justify-center gap-2 rounded-xl px-6 text-sm font-bold uppercase tracking-widest text-white transition-colors"
           >
             <Share2 className="w-4 h-4" />
           </button>

@@ -5,7 +5,7 @@ const repoHref = "https://github.com/Abhinavv-007/f1";
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-border-subtle/30 bg-black/20 backdrop-blur-xl relative z-10">
+    <footer className="relative z-10 mt-auto border-t border-border-subtle/30 bg-black/[0.16] backdrop-blur-2xl">
       <div className="max-w-[1600px] mx-auto px-6 py-10 md:px-12 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-xl">
           <div className="flex items-center gap-3 mb-3">

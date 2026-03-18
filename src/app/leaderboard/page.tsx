@@ -203,9 +203,13 @@ export default function LeaderboardPage() {
 
             {/* Pagination / Load More */}
             <div className="py-8 flex justify-center items-center gap-6 bg-surface-deep/40 mt-auto border-t border-border-strong/50">
-               <button className="text-xs font-bold uppercase tracking-widest text-text-muted hover:text-white transition-colors bg-surface-hover px-6 py-2 rounded">Prev</button>
+               <button className="glass-button inline-flex h-10 items-center justify-center rounded-full px-6 text-xs font-bold uppercase tracking-widest text-white transition-colors">
+                 Prev
+               </button>
                <span className="font-mono text-sm text-text-secondary tracking-widest">PAGE 1 OF 420</span>
-               <button className="text-xs font-bold uppercase tracking-widest text-white hover:text-black hover:bg-white transition-colors bg-surface-hover px-6 py-2 rounded shadow-lg">Next</button>
+               <button className="glass-button topbar-button topbar-button-active inline-flex h-10 items-center justify-center rounded-full px-6 text-xs font-bold uppercase tracking-widest text-white transition-colors">
+                 Next
+               </button>
             </div>
 
           </Card>

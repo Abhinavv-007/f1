@@ -72,7 +72,7 @@ export default function LoginPage() {
               <button 
                 onClick={handleGoogleSignIn}
                 disabled={isLoading}
-                className="w-full h-14 rounded bg-white text-black font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-gray-200 transition-colors shadow-[0_4px_14px_0_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="glass-button topbar-button inline-flex h-14 w-full items-center justify-center gap-3 rounded-xl px-4 text-sm font-bold uppercase tracking-widest text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
