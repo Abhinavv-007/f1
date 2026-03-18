@@ -37,28 +37,10 @@ export function Navbar() {
               Race Ops
             </span>
           </Link>
-
-          <div className="flex items-center gap-2 md:hidden">
-            {user ? (
-              <Link href="/profile" className="w-10 h-10 rounded-full overflow-hidden border border-border-strong hover:border-trgt-crimson transition-colors">
-                <Image
-                  src={user.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user.displayName || "F1"}`}
-                  alt="User"
-                  width={40}
-                  height={40}
-                  className="w-full h-full object-cover"
-                />
-              </Link>
-            ) : (
-              <Link href="/login" className="glass-button topbar-button inline-flex h-10 items-center justify-center rounded-full px-4 text-xs font-display uppercase tracking-[0.18em] text-white transition-colors">
-                Sign In
-              </Link>
-            )}
-          </div>
         </div>
 
-        <nav aria-label="Primary navigation" className="overflow-x-auto md:overflow-visible">
-          <div className="flex min-w-max items-center gap-2 md:mx-auto md:w-fit">
+        <nav aria-label="Primary navigation" className="md:overflow-visible">
+          <div className="grid grid-cols-2 gap-2 md:mx-auto md:flex md:min-w-max md:w-fit md:items-center">
             {navLinks.map((link) => {
               const isActive = pathname.startsWith(link.href);
               return (
@@ -66,7 +48,7 @@ export function Navbar() {
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "glass-button topbar-button inline-flex items-center justify-center rounded-full border px-4 py-2.5 text-xs font-medium uppercase tracking-[0.18em] transition-colors md:text-sm",
+                    "glass-button topbar-button inline-flex min-h-11 items-center justify-center rounded-full border px-3 py-2.5 text-[11px] font-medium uppercase tracking-[0.14em] transition-colors md:min-h-0 md:px-4 md:text-sm md:tracking-[0.18em]",
                     isActive
                       ? "topbar-button-active"
                       : "border-border-strong/70 text-text-secondary hover:text-white"
@@ -78,6 +60,58 @@ export function Navbar() {
             })}
           </div>
         </nav>
+
+        <div className="grid grid-cols-2 gap-2 md:hidden">
+          {loading ? (
+            <>
+              <div className="h-11 animate-pulse rounded-full bg-surface-hover" />
+              <div className="h-11 animate-pulse rounded-full bg-surface-hover" />
+            </>
+          ) : user ? (
+            <>
+              <Link
+                href="/profile"
+                className="glass-button topbar-button inline-flex h-11 items-center justify-center gap-2 rounded-full px-4 text-[11px] font-display uppercase tracking-[0.16em] text-white transition-colors"
+              >
+                <Image
+                  src={user.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${user.displayName || "F1"}`}
+                  alt="User"
+                  width={22}
+                  height={22}
+                  className="h-[22px] w-[22px] rounded-full object-cover"
+                />
+                User
+              </Link>
+              <button
+                onClick={() => auth && signOut(auth)}
+                className="glass-button topbar-button inline-flex h-11 items-center justify-center rounded-full px-4 text-[11px] font-display uppercase tracking-[0.16em] text-white transition-colors"
+              >
+                Out
+              </button>
+              <Link
+                href="/predict"
+                className="glass-button topbar-button topbar-button-active col-span-2 inline-flex h-11 items-center justify-center rounded-full px-4 text-[11px] font-display uppercase tracking-[0.16em] text-white transition-colors"
+              >
+                Lock Prediction
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="glass-button topbar-button inline-flex h-11 items-center justify-center rounded-full px-4 text-[11px] font-display uppercase tracking-[0.16em] text-white transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/predict"
+                className="glass-button topbar-button topbar-button-active inline-flex h-11 items-center justify-center rounded-full px-4 text-[11px] font-display uppercase tracking-[0.16em] text-white transition-colors"
+              >
+                Lock Prediction
+              </Link>
+            </>
+          )}
+        </div>
 
         <div className="hidden md:flex items-center gap-3 justify-self-end">
           {loading ? (
