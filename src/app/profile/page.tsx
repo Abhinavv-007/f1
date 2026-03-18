@@ -14,7 +14,6 @@ import {
   type ProfileActionResult,
   type ProfilePrediction,
 } from "@/app/actions/profile";
-import { computeBadges } from "@/lib/badges";
 import { getRaceByRound } from "@/lib/race";
 import driversData from "@/data/drivers.json";
 
@@ -43,7 +42,12 @@ export default function ProfilePage() {
     let cancelled = false;
 
     if (user?.uid) {
-      getUserProfile(user.uid)
+      getUserProfile({
+        id: user.uid,
+        email: user.email,
+        name: user.displayName,
+        image: user.photoURL,
+      })
         .then((res) => {
           if (cancelled) {
             return;
@@ -302,7 +306,7 @@ export default function ProfilePage() {
                <Card glass carbon className="p-8 bg-black/60 border-border-strong shadow-2xl relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-t from-f1-yellow/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
                   <div className="relative z-10">
-                    <BadgeCase earnedBadgeIds={computeBadges(profileData?.predictions || [])} />
+                    <BadgeCase badges={profileData?.badges || []} />
                   </div>
                </Card>
              </TiltCard>

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { SessionSnapshot } from "@/lib/race";
+import { getLocalSessionSnapshot, type SessionSnapshot } from "@/lib/race";
+import { readJsonResponse } from "@/lib/http";
 
 interface CountdownState {
   compact: string;
@@ -71,13 +72,16 @@ export function useRaceSession() {
     async function loadSession() {
       try {
         const res = await fetch("/api/session", { cache: "no-store" });
-        const data = (await res.json()) as SessionSnapshot & { error?: string };
+        const data = await readJsonResponse<SessionSnapshot & { error?: string }>(res);
 
         if (cancelled) {
           return;
         }
 
         if (!res.ok) {
+          const fallback = getLocalSessionSnapshot(new Date());
+          setSession(fallback);
+          setNow(Date.now());
           setError(data.error ?? "Failed to load session data.");
           return;
         }
@@ -87,6 +91,9 @@ export function useRaceSession() {
         setNow(Date.now());
       } catch (requestError) {
         if (!cancelled) {
+          const fallback = getLocalSessionSnapshot(new Date());
+          setSession(fallback);
+          setNow(Date.now());
           setError(requestError instanceof Error ? requestError.message : "Failed to load session data.");
         }
       }

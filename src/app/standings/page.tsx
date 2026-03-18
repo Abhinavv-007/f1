@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import { TiltCard } from "@/components/ui/TiltCard";
+import fallbackStandings from "@/data/standings.json";
+import { readJsonResponse } from "@/lib/http";
+import { formatNationalityFlag } from "@/lib/utils";
 import { Trophy, Shield, ChevronUp, Minus, Loader2 } from "lucide-react";
 
 type StandingTab = "drivers" | "constructors";
@@ -40,18 +43,37 @@ interface StandingsPayload {
   error?: string;
 }
 
+const snapshotPayload: StandingsPayload = {
+  season: fallbackStandings.season,
+  round: fallbackStandings.round,
+  drivers: fallbackStandings.drivers.map((driver) => ({
+    ...driver,
+    nationality: formatNationalityFlag(driver.nationality),
+  })),
+  constructors: fallbackStandings.constructors,
+  source: "snapshot",
+  stale: true,
+  updatedAt: new Date(0).toISOString(),
+};
+
 export default function StandingsPage() {
   const [activeTab, setActiveTab] = useState<StandingTab>("drivers");
   const [loading, setLoading] = useState(true);
-  const [drivers, setDrivers] = useState<DriverStanding[]>([]);
-  const [constructors, setConstructors] = useState<ConstructorStanding[]>([]);
-  const [meta, setMeta] = useState<Pick<StandingsPayload, "season" | "round" | "source" | "stale" | "error"> | null>(null);
+  const [drivers, setDrivers] = useState<DriverStanding[]>(snapshotPayload.drivers);
+  const [constructors, setConstructors] = useState<ConstructorStanding[]>(snapshotPayload.constructors);
+  const [meta, setMeta] = useState<Pick<StandingsPayload, "season" | "round" | "source" | "stale" | "error"> | null>({
+    season: snapshotPayload.season,
+    round: snapshotPayload.round,
+    source: snapshotPayload.source,
+    stale: snapshotPayload.stale,
+    error: undefined,
+  });
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/standings", { cache: "no-store" })
       .then(async (res) => {
-        const data = (await res.json()) as StandingsPayload;
+        const data = await readJsonResponse<StandingsPayload>(res);
 
         if (!res.ok) {
           throw new Error(data.error || "Failed to load standings");
@@ -75,6 +97,15 @@ export default function StandingsPage() {
       })
       .catch((err) => {
         console.error("Failed to load standings", err);
+        setDrivers(snapshotPayload.drivers);
+        setConstructors(snapshotPayload.constructors);
+        setMeta({
+          season: snapshotPayload.season,
+          round: snapshotPayload.round,
+          source: "snapshot",
+          stale: true,
+          error: "Cloudflare returned a non-JSON worker error. Showing the bundled standings snapshot instead.",
+        });
         setError(err instanceof Error ? err.message : "Failed to load standings");
         setLoading(false);
       });
@@ -97,7 +128,7 @@ export default function StandingsPage() {
     show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
-  if (loading) {
+  if (loading && !drivers.length && !constructors.length) {
      return (
        <div className="flex items-center justify-center min-h-[60vh]">
          <Loader2 className="w-12 h-12 animate-spin text-trgt-crimson drop-shadow-[0_0_15px_rgba(238,63,44,0.5)]" />

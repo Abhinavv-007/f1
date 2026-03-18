@@ -1,5 +1,9 @@
 "use server";
 
+import {
+  syncAuthenticatedUserRecord,
+  syncUserBadges,
+} from "@/lib/badge-service";
 import { prisma } from "@/lib/prisma";
 import { fetchSessionSnapshot } from "@/lib/race";
 import { revalidatePath } from "next/cache";
@@ -41,19 +45,11 @@ export async function submitPrediction(formData: FormData) {
       return { error: `Predictions are locked for Round ${session.round}.` };
     }
 
-    await prisma.user.upsert({
-      where: { id: userId },
-      update: {
-        email: userEmail,
-        name: userName || null,
-        image: userImage || null,
-      },
-      create: {
-        id: userId,
-        email: userEmail,
-        name: userName || null,
-        image: userImage || null,
-      },
+    await syncAuthenticatedUserRecord({
+      id: userId,
+      email: userEmail,
+      name: userName || null,
+      image: userImage || null,
     });
 
     const prediction = await prisma.prediction.upsert({
@@ -88,6 +84,8 @@ export async function submitPrediction(formData: FormData) {
         locked: false,
       },
     });
+
+    await syncUserBadges(userId);
 
     revalidatePath("/profile");
     revalidatePath("/predict");

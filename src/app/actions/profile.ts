@@ -1,6 +1,13 @@
 "use server";
 
 import type { Prediction } from "@prisma/client";
+import { buildBadgeStates, type BadgeState } from "@/lib/badges";
+import {
+  getUserBadgeMetrics,
+  syncAuthenticatedUserRecord,
+  syncUserBadges,
+  type AuthenticatedUserInput,
+} from "@/lib/badge-service";
 import { prisma } from "@/lib/prisma";
 
 export type ProfilePrediction = Pick<
@@ -27,10 +34,16 @@ export interface ProfileStats {
   predictionsCount: number;
 }
 
+export interface ProfileUser {
+  createdAt: string;
+}
+
 export type ProfileActionResult =
   | {
       success: true;
+      user: ProfileUser;
       stats: ProfileStats;
+      badges: BadgeState[];
       predictions: ProfilePrediction[];
     }
   | {
@@ -38,41 +51,45 @@ export type ProfileActionResult =
       error: string;
     };
 
-export async function getUserProfile(userId: string) {
+export async function getUserProfile(input: AuthenticatedUserInput) {
   try {
-    const [user, predictions] = await Promise.all([
+    const syncedUser = await syncAuthenticatedUserRecord(input);
+    const [user, predictions, storedBadges, badgeMetrics] = await Promise.all([
       prisma.user.findUnique({
-        where: { id: userId },
-        select: { globalRank: true },
+        where: { id: syncedUser.id },
+        select: { globalRank: true, createdAt: true },
       }),
       prisma.prediction.findMany({
-        where: { userId },
+        where: { userId: syncedUser.id },
         orderBy: [{ season: "desc" }, { raceRound: "desc" }],
       }),
+      syncUserBadges(syncedUser.id),
+      getUserBadgeMetrics(syncedUser.id),
     ]);
 
-    const totalPoints = predictions.reduce((sum, prediction) => sum + (prediction.pointsEarned ?? 0), 0);
-    const scoredPredictions = predictions.filter(
-      (prediction) => typeof prediction.accuracyScore === "number"
-    );
-    const accuracy =
-      scoredPredictions.length > 0
-        ? Math.round(
-            scoredPredictions.reduce(
-              (sum, prediction) => sum + (prediction.accuracyScore ?? 0),
-              0
-            ) / scoredPredictions.length
-          )
-        : 0;
+    const totalPoints = badgeMetrics.totalPoints;
+    const accuracy = badgeMetrics.accuracy;
 
     return {
       success: true,
+      user: {
+        createdAt: user?.createdAt.toISOString() ?? syncedUser.createdAt.toISOString(),
+      },
       stats: {
         totalPoints,
         accuracy,
         globalRank: user?.globalRank ?? null,
         predictionsCount: predictions.length,
       },
+      badges: buildBadgeStates(
+        {
+          accountCreatedAt: user?.createdAt ?? syncedUser.createdAt,
+          predictionsCount: badgeMetrics.predictionsCount,
+          totalPoints: badgeMetrics.totalPoints,
+          accuracy: badgeMetrics.accuracy,
+        },
+        storedBadges
+      ),
       predictions,
     } satisfies ProfileActionResult;
   } catch (error) {

@@ -154,59 +154,84 @@ export default function PredictPage() {
             </div>
             
             <TiltCard intensity={8}>
-              <Card glass carbon className="p-8 bg-black/60 grid grid-cols-1 sm:grid-cols-3 gap-6 relative border-border-strong shadow-2xl">
+              <Card glass carbon className="p-8 bg-black/60 relative border-border-strong shadow-2xl">
                  <div className="absolute inset-0 bg-gradient-to-t from-trgt-crimson/5 to-transparent pointer-events-none rounded-xl" />
-                 
-                 {/* 2nd Place */}
-                 <div className="flex flex-col gap-4 pt-4 sm:pt-16 order-2 sm:order-1 relative z-20 group">
-                   <div className="text-center transform group-hover:-translate-y-2 transition-transform">
-                     <span className="font-display text-5xl font-black text-white/20 block mb-2 leading-none drop-shadow-md group-hover:text-white/40 transition-colors">P2</span>
-                     <span className="text-[10px] uppercase tracking-widest text-[#B0BEC5] font-black group-hover:text-white transition-colors">+5 PTS</span>
+                 <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-end">
+                   {/* 2nd Place */}
+                   <div className="order-2 flex min-w-0 flex-1 flex-col gap-4 md:order-1 md:pb-10 group">
+                     <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.03] px-6 py-8 text-center transition-transform md:min-h-[320px] md:group-hover:-translate-y-1">
+                       <span className="mb-3 block font-display text-5xl font-black leading-none text-white/20 drop-shadow-md transition-colors group-hover:text-white/40">
+                         P2
+                       </span>
+                       <span className="text-[10px] font-black uppercase tracking-widest text-[#B0BEC5] transition-colors group-hover:text-white">
+                         +5 PTS
+                       </span>
+                     </div>
+                     <select
+                       value={form.p2}
+                       onChange={(e) => handleSelect("p2", e.target.value)}
+                       disabled={isLocked || isPending}
+                       className="h-16 rounded-xl border-2 border-border-strong bg-surface-deep text-white font-display font-bold uppercase text-base px-4 focus:border-[#B0BEC5] focus:bg-white/5 focus:outline-none appearance-none cursor-pointer transition-all shadow-inner group-hover:border-[#B0BEC5]/50"
+                     >
+                       <option value="">Select P2</option>
+                       {driversData.map((d) => (
+                         <option key={d.code} value={d.code}>
+                           {d.firstName} {d.lastName}
+                         </option>
+                       ))}
+                     </select>
                    </div>
-                   <select 
-                     value={form.p2}
-                     onChange={(e) => handleSelect("p2", e.target.value)}
-                     disabled={isLocked || isPending}
-                     className="h-16 rounded-lg border-2 border-border-strong bg-surface-deep text-white font-display font-bold uppercase text-base px-4 focus:border-[#B0BEC5] focus:bg-white/5 focus:outline-none appearance-none cursor-pointer transition-all shadow-inner group-hover:border-[#B0BEC5]/50"
-                   >
-                     <option value="">Select P2</option>
-                     {driversData.map(d => <option key={d.code} value={d.code}>{d.firstName} {d.lastName}</option>)}
-                   </select>
-                 </div>
 
-                 {/* 1st Place (Winner) */}
-                 <div className="flex flex-col gap-4 order-1 sm:order-2 relative z-30 mb-8 sm:mb-0 mt-4 sm:-mt-8 group">
-                   <div className="text-center transform group-hover:-translate-y-4 transition-transform duration-300">
-                     <Award className="w-10 h-10 text-trgt-crimson mx-auto mb-2 opacity-50 group-hover:opacity-100 group-hover:drop-shadow-[0_0_15px_rgba(238,63,44,0.8)] transition-all" />
-                     <span className="font-display text-7xl font-black text-trgt-crimson block mb-2 leading-none drop-shadow-[0_0_20px_rgba(238,63,44,0.3)]">P1</span>
-                     <span className="text-xs uppercase tracking-widest text-trgt-crimson font-black">+10 PTS</span>
+                   {/* 1st Place */}
+                   <div className="order-1 flex min-w-0 flex-[1.08] flex-col gap-4 md:order-2 group">
+                     <div className="rounded-[2rem] border border-trgt-crimson/30 bg-[linear-gradient(180deg,rgba(238,63,44,0.14),rgba(255,255,255,0.02)_28%,rgba(0,0,0,0.48)_100%)] px-6 py-8 text-center shadow-[0_0_50px_rgba(238,63,44,0.12)] transition-transform md:min-h-[376px] md:group-hover:-translate-y-2">
+                       <Award className="mx-auto mb-3 h-10 w-10 text-trgt-crimson opacity-70 transition-all group-hover:opacity-100 group-hover:drop-shadow-[0_0_15px_rgba(238,63,44,0.8)]" />
+                       <span className="mb-3 block font-display text-7xl font-black leading-none text-trgt-crimson drop-shadow-[0_0_20px_rgba(238,63,44,0.3)]">
+                         P1
+                       </span>
+                       <span className="text-xs font-black uppercase tracking-widest text-trgt-crimson">
+                         +10 PTS
+                       </span>
+                     </div>
+                     <select
+                       value={form.p1}
+                       onChange={(e) => handleSelect("p1", e.target.value)}
+                       disabled={isLocked || isPending}
+                       className="h-20 rounded-xl border-4 border-trgt-crimson/50 bg-trgt-crimson/10 text-white font-display uppercase text-xl font-black tracking-tight px-6 focus:border-trgt-crimson focus:bg-trgt-crimson/20 focus:outline-none appearance-none shadow-[0_0_40px_rgba(238,63,44,0.2)] cursor-pointer hover:border-trgt-crimson transition-all"
+                     >
+                       <option value="">Select Winner</option>
+                       {driversData.map((d) => (
+                         <option key={d.code} value={d.code}>
+                           {d.firstName} {d.lastName}
+                         </option>
+                       ))}
+                     </select>
                    </div>
-                   <select 
-                     value={form.p1}
-                     onChange={(e) => handleSelect("p1", e.target.value)}
-                     disabled={isLocked || isPending}
-                     className="h-20 rounded-xl border-4 border-trgt-crimson/50 bg-trgt-crimson/10 text-white font-display uppercase text-xl font-black tracking-tight px-6 focus:border-trgt-crimson focus:bg-trgt-crimson/20 focus:outline-none appearance-none shadow-[0_0_40px_rgba(238,63,44,0.2)] cursor-pointer hover:border-trgt-crimson transition-all"
-                   >
-                     <option value="">Select Winner</option>
-                     {driversData.map(d => <option key={d.code} value={d.code}>{d.firstName} {d.lastName}</option>)}
-                   </select>
-                 </div>
 
-                 {/* 3rd Place */}
-                 <div className="flex flex-col gap-4 pt-4 sm:pt-24 order-3 sm:order-3 relative z-10 group">
-                   <div className="text-center transform group-hover:-translate-y-2 transition-transform">
-                     <span className="font-display text-4xl font-black text-white/10 block mb-2 leading-none group-hover:text-white/30 transition-colors">P3</span>
-                     <span className="text-[10px] uppercase tracking-widest text-[#CD7F32] font-black group-hover:text-white transition-colors">+5 PTS</span>
+                   {/* 3rd Place */}
+                   <div className="order-3 flex min-w-0 flex-1 flex-col gap-4 md:pb-4 group">
+                     <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.02] px-6 py-8 text-center transition-transform md:min-h-[286px] md:group-hover:-translate-y-1">
+                       <span className="mb-3 block font-display text-4xl font-black leading-none text-white/10 transition-colors group-hover:text-white/30">
+                         P3
+                       </span>
+                       <span className="text-[10px] font-black uppercase tracking-widest text-[#CD7F32] transition-colors group-hover:text-white">
+                         +5 PTS
+                       </span>
+                     </div>
+                     <select
+                       value={form.p3}
+                       onChange={(e) => handleSelect("p3", e.target.value)}
+                       disabled={isLocked || isPending}
+                       className="h-14 rounded-xl border-2 border-border-strong bg-surface-deep text-white font-display font-bold uppercase text-base px-4 focus:border-[#CD7F32] focus:bg-white/5 focus:outline-none appearance-none cursor-pointer transition-all shadow-inner group-hover:border-[#CD7F32]/50"
+                     >
+                       <option value="">Select P3</option>
+                       {driversData.map((d) => (
+                         <option key={d.code} value={d.code}>
+                           {d.firstName} {d.lastName}
+                         </option>
+                       ))}
+                     </select>
                    </div>
-                   <select 
-                     value={form.p3}
-                     onChange={(e) => handleSelect("p3", e.target.value)}
-                     disabled={isLocked || isPending}
-                     className="h-14 rounded-lg border-2 border-border-strong bg-surface-deep text-white font-display font-bold uppercase text-base px-4 focus:border-[#CD7F32] focus:bg-white/5 focus:outline-none appearance-none cursor-pointer transition-all shadow-inner group-hover:border-[#CD7F32]/50"
-                   >
-                     <option value="">Select P3</option>
-                     {driversData.map(d => <option key={d.code} value={d.code}>{d.firstName} {d.lastName}</option>)}
-                   </select>
                  </div>
               </Card>
             </TiltCard>

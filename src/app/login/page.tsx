@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/Card";
 import Link from "next/link";
+import { syncAuthenticatedUser } from "@/app/actions/user";
 import { Mail, ChevronRight, Loader2 } from "lucide-react";
 import { auth, googleProvider } from "@/lib/firebase";
 import { signInWithPopup } from "firebase/auth";
@@ -22,6 +23,12 @@ export default function LoginPage() {
     setError(null);
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      await syncAuthenticatedUser({
+        id: result.user.uid,
+        email: result.user.email,
+        name: result.user.displayName,
+        image: result.user.photoURL,
+      });
       console.log("Logged in as:", result.user.displayName);
       window.location.href = "/profile";
     } catch (error) {

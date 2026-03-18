@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/Card";
+import { readJsonResponse } from "@/lib/http";
 import { Cloud, Droplets, Wind, Thermometer, Loader2 } from "lucide-react";
 
 interface WeatherWidgetProps {
@@ -29,7 +30,7 @@ export function WeatherWidget({ circuitId }: WeatherWidgetProps) {
 
     fetch(`/api/weather?circuit=${circuitId}`, { cache: "no-store" })
       .then(async (res) => {
-        const json = (await res.json()) as WeatherData & { error?: string };
+        const json = await readJsonResponse<WeatherData & { error?: string }>(res);
         if (!res.ok) {
           throw new Error(json.error || "Failed to load weather");
         }

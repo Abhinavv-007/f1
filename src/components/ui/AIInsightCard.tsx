@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Zap, Loader2 } from "lucide-react";
+import { readJsonResponse } from "@/lib/http";
 import { cn } from "@/lib/utils";
 
 interface AIInsightCardProps {
@@ -30,7 +31,7 @@ export function AIInsightCard({ circuitId, lap, className }: AIInsightCardProps)
 
     fetch(url, { signal: controller.signal })
       .then(async (response) => {
-        const payload = (await response.json()) as { fact?: string; error?: string };
+        const payload = await readJsonResponse<{ fact?: string; error?: string }>(response);
         if (!response.ok) {
           throw new Error(payload.error || "Telemetry uplink unavailable.");
         }
