@@ -13,6 +13,8 @@ import {
 } from "@/lib/race";
 import { formatCountryFlag } from "@/lib/utils";
 
+export const runtime = "edge";
+
 function renderScale(value: number, colorClass: string) {
   return (
     <div className="w-full flex gap-1 h-3">
