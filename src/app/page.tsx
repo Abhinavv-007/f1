@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <div className="relative w-full overflow-hidden">
       {/* ═══ HERO SECTION ═══ */}
-      <section className="relative min-h-[90vh] flex items-center pt-24 pb-20">
+      <section className="relative flex min-h-[82vh] items-start pt-8 pb-20 md:pt-10">
         <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-start justify-between gap-12">
           
           {/* Left Hero Content */}
@@ -136,7 +136,7 @@ export default function Home() {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.6 }}
-            className="w-full lg:w-auto lg:mt-32"
+            className="w-full lg:w-auto lg:mt-12"
           >
             <div className="glass p-8 md:p-10 rounded-2xl max-w-md w-full relative group border-t-0 border-x-0 border-b-2 border-b-trgt-crimson/50 bg-[#111111]/80 backdrop-blur-md">
               <div className="absolute inset-0 bg-gradient-to-br from-trgt-crimson/5 to-transparent rounded-2xl pointer-events-none transition-opacity group-hover:opacity-100 opacity-50" />
