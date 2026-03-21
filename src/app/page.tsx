@@ -15,6 +15,12 @@ export default function Home() {
   const locationLabel = session ? [session.city, session.country].filter(Boolean).join(" • ") : "Location loading";
   const cardLabel = session?.status === "completed" ? "Season Complete" : session?.isLocked ? "Session Locked" : "Next Race";
   const signalLabel = error ? "Snapshot feed" : session?.source === "remote" ? "Live schedule" : "Race cache";
+  const countdownSegments = [
+    { label: "Days", value: countdown.days },
+    { label: "Hrs", value: countdown.hours },
+    { label: "Min", value: countdown.minutes },
+    { label: "Sec", value: countdown.seconds },
+  ];
   const featureIndexClassName =
     "pointer-events-none absolute -top-8 -left-4 select-none font-mono text-6xl font-black tracking-[-0.06em] text-[rgba(238,63,44,0.3)] drop-shadow-[0_0_18px_rgba(238,63,44,0.18)] transition-all duration-500 group-hover:scale-110 group-hover:text-[rgba(255,122,96,0.52)] md:-top-10 md:-left-6 md:text-8xl";
 
@@ -138,47 +144,41 @@ export default function Home() {
             transition={{ duration: 0.7, delay: 0.6 }}
             className="w-full lg:w-auto lg:mt-12"
           >
-            <div className="glass p-8 md:p-10 rounded-2xl max-w-md w-full relative group border-t-0 border-x-0 border-b-2 border-b-trgt-crimson/50 bg-[#111111]/80 backdrop-blur-md">
+            <div className="glass relative w-full max-w-md rounded-2xl border-b-2 border-b-trgt-crimson/50 border-x-0 border-t-0 bg-[#111111]/80 p-5 backdrop-blur-md sm:p-8 md:p-10">
               <div className="absolute inset-0 bg-gradient-to-br from-trgt-crimson/5 to-transparent rounded-2xl pointer-events-none transition-opacity group-hover:opacity-100 opacity-50" />
               <div className="relative z-10 flex flex-col">
                 <span className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-2 font-medium">{cardLabel}</span>
-                <h3 className="text-white font-bold font-display text-2xl uppercase tracking-tight mb-1">
+                <h3 className="mb-1 max-w-[16rem] font-display text-xl font-bold uppercase leading-tight tracking-tight text-white sm:max-w-none sm:text-2xl">
                   {session?.sessionName || (error ? "Schedule Offline" : "Loading Race")}
                 </h3>
-                <span className="text-white/40 text-sm font-sans mb-8">
+                <span className="mb-6 text-xs font-sans text-white/40 sm:mb-8 sm:text-sm">
                   {session?.circuit || "Circuit TBD"}
                 </span>
-                
-                <div className="flex items-center justify-between gap-2 font-mono text-5xl font-normal tracking-tight">
-                  <div className="flex flex-col items-center">
-                    <span className="text-white drop-shadow-md">{countdown.days}</span>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Days</span>
-                  </div>
-                  <span className="text-trgt-crimson mb-8 text-2xl font-black">:</span>
-                  <div className="flex flex-col items-center">
-                    <span className="text-white drop-shadow-md">{countdown.hours}</span>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Hrs</span>
-                  </div>
-                  <span className="text-trgt-crimson mb-8 text-2xl font-black">:</span>
-                  <div className="flex flex-col items-center">
-                    <span className="text-white drop-shadow-md">{countdown.minutes}</span>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Min</span>
-                  </div>
-                  <span className="text-trgt-crimson mb-8 text-2xl font-black">:</span>
-                  <div className="flex flex-col items-center">
-                    <span className="text-white drop-shadow-md">{countdown.seconds}</span>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-sans mt-3">Sec</span>
-                  </div>
+
+                <div className="grid grid-cols-2 gap-3 sm:flex sm:items-start sm:justify-between sm:gap-2">
+                  {countdownSegments.map((segment) => (
+                    <div
+                      key={segment.label}
+                      className="rounded-xl border border-white/8 bg-black/20 px-3 py-4 text-center sm:flex-1 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0"
+                    >
+                      <span className="block font-mono text-3xl font-normal tracking-tight text-white drop-shadow-md sm:text-5xl">
+                        {segment.value}
+                      </span>
+                      <span className="mt-2 block text-[10px] font-sans uppercase tracking-[0.2em] text-white/40 sm:mt-3">
+                        {segment.label}
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-border-subtle/30 flex items-center justify-between">
+                <div className="mt-6 flex flex-col gap-4 border-t border-border-subtle/30 pt-5 sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:pt-6">
                    <Link
                     href="/predict"
                     className="btn-angled bg-trgt-crimson text-white text-[12px] font-bold uppercase tracking-[0.06em] px-6 py-2.5 hover:bg-trgt-crimson-deep transition-all duration-300"
                    >
                     {session?.isLocked ? "View Predictions" : "Lock Prediction"}
                    </Link>
-                   <span className="text-white/30 text-[12px] font-light">{locationLabel}</span>
+                   <span className="text-[12px] font-light text-white/30">{locationLabel}</span>
                 </div>
               </div>
             </div>
