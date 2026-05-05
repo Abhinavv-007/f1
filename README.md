@@ -246,7 +246,7 @@ f1/
 <div align="center">
   <sub>🏎 Built and engineered by <a href="https://abhnv.in"><b>Abhinav Raj</b></a> · ship every Sunday — race day.</sub>
   <br/>
-  <a href="https://abhnv.in">Portfolio</a> · <a href="https://www.linkedin.com/in/abhnv07/">LinkedIn</a> · <a href="https://x.com/Abhnv007">X</a> · <a href="https://www.instagram.com/abhinavv.007/">Instagram</a>
+  <a href="https://abhnv.in">Portfolio</a> · <a href="https://www.linkedin.com/in/abhnv07/">LinkedIn</a> · <a href="https://x.com/Abhnv8">X</a> · <a href="https://www.instagram.com/abhinavv.007/">Instagram</a>
   <br/><br/>
   <sub>📅 <i>Last impression </i><img src="https://img.shields.io/github/last-commit/Abhinavv-007/f1?style=flat-square&label=&color=EE3F2C&labelColor=000000" valign="middle" /> · <i>Total commits </i><img src="https://img.shields.io/github/commit-activity/t/Abhinavv-007/f1?style=flat-square&label=&color=EE3F2C&labelColor=000000" valign="middle" /></sub>
 </div>
