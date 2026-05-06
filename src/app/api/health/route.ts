@@ -5,11 +5,13 @@
  * any external uptime monitor. Cheap, cacheable, never returns secrets.
  */
 import { NextResponse } from "next/server";
+import { bumpMetric } from "@/lib/admin-metrics";
 
 export const runtime = "edge";
 
 export async function GET() {
-  return NextResponse.json(
+  const t0 = Date.now();
+  const res = NextResponse.json(
     {
       ok: true,
       service: "trgt",
@@ -22,11 +24,16 @@ export async function GET() {
       },
     },
   );
+  bumpMetric("/api/health", 200, Date.now() - t0);
+  return res;
 }
 
 export async function HEAD() {
-  return new Response(null, {
+  const t0 = Date.now();
+  const res = new Response(null, {
     status: 200,
     headers: { "cache-control": "public, max-age=10" },
   });
+  bumpMetric("/api/health", 200, Date.now() - t0);
+  return res;
 }
