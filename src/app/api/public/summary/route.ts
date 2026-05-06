@@ -8,11 +8,13 @@
  * return a stable-shape placeholder.
  */
 import { NextResponse } from "next/server";
+import { bumpMetric } from "@/lib/admin-metrics";
 
 export const runtime = "edge";
 
 export async function GET() {
-  return NextResponse.json(
+  const t0 = Date.now();
+  const res = NextResponse.json(
     {
       service: "trgt",
       generatedAt: Math.floor(Date.now() / 1000),
@@ -33,4 +35,6 @@ export async function GET() {
       },
     },
   );
+  bumpMetric("/api/public/summary", 200, Date.now() - t0);
+  return res;
 }
