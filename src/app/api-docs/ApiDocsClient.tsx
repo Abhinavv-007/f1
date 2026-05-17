@@ -32,7 +32,7 @@ export function ApiDocsClient() {
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top)[0];
-        if (visible) setActive((visible.target.dataset.docId ?? "") as string);
+        if (visible) setActive(((visible.target as HTMLElement).dataset.docId ?? "") as string);
       },
       { rootMargin: "-25% 0px -65% 0px", threshold: 0 },
     );
